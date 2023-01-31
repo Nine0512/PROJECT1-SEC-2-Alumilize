@@ -102,20 +102,6 @@ window.addEventListener('keydown', (event) => {
     increaseScore()
   }
 
-  // if (event.key === 'Alt'){
-  //   reScore()
-  // }
-
-  let check = ref(false)
-  if (event.key === 'Control') {
-    check.value = true
-    console.log(check.value)
-    if (check.value && event.key === 'Enter') {
-      reScore()
-    }
-  }
-
-
 
 })
 
@@ -244,10 +230,11 @@ window.addEventListener('keydown', (event) => {
             <div></div>
           </div>
           <div class="flex justify-center">
-            <img :src="restart" alt="restart" class="w-12 h-auto cursor-pointer p-3 cursor-pointer"
-                 v-on:click="reScore()">
+            <button @click="reScore()"><img :src="restart" alt="restart" class="w-12 h-auto cursor-pointer p-3 cursor-pointer">
+            </button>
           </div>
         </div>
+
         <!-- footer -->
       </div>
 
