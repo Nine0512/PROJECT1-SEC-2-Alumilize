@@ -21,9 +21,7 @@ function togglePlay() {
   this.showPlay = !this.showPlay;
 }
 
-
 // logic
-
 
 import {wordArr} from "./data/wordArr.js";
 
@@ -104,7 +102,6 @@ window.addEventListener('keydown', (event) => {
 
 
 })
-
 
 </script>
 
@@ -210,7 +207,8 @@ window.addEventListener('keydown', (event) => {
                   </h2>
                   <br>
                   <span v-for="(item,index) in word" :key="index"
-                        :class=" isCorrect(word, letter, index)? 'text-white' : index > countIndex - 1? 'text-light_gray opacity-50' : 'text-red' ">{{
+                        :class=" isCorrect(word, letter, index)? 'text-white' : index > countIndex - 1? 'text-light_gray opacity-50' : 'text-red' " class="px-0.5"><span
+                      :class="countIndex === index?'' : 'hidden'" class="animate-ping">|</span>{{
                       item
                     }}</span>
 
@@ -231,14 +229,14 @@ window.addEventListener('keydown', (event) => {
             <div></div>
           </div>
           <div class="flex justify-center">
-            <button @click="reScore()"><img :src="restart" alt="restart" class="w-12 h-auto cursor-pointer p-3 cursor-pointer">
+            <button @click="reScore()"><img :src="restart" alt="restart"
+                                            class="w-12 h-auto cursor-pointer p-3 cursor-pointer">
             </button>
           </div>
         </div>
         <!-- footer -->
         <div></div>
       </div>
-
 
     </div>
 

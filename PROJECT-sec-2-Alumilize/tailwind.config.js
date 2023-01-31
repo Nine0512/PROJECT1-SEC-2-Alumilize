@@ -13,7 +13,11 @@ module.exports = {
             green: "#00FF00",
             red: "#D62626",
         },
-        extend: {},
+        extend: {
+            spacing: {
+                '0.1': '5px',
+            }
+        },
     },
     plugins: [],
 }
