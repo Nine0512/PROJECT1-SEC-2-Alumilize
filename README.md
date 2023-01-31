@@ -1,5 +1,8 @@
 # PROJECT1-SEC-2-Alumilize
 
+## Prototype TestType
+https://prototype-alumilize.netlify.app/
+
 ## Member
 
 - 074 : Worawit Limthong
