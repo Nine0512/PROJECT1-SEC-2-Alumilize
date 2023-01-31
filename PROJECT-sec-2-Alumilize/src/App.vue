@@ -185,12 +185,25 @@ window.addEventListener('keydown', (event) => {
                       :class=" isCorrect(word, letter, index)? 'text-white' : index > countIndex - 1? 'text-light_gray opacity-50' : 'text-red' ">{{
                     item
                   }}</span>
+
+<!--                <p>{{ letter.join('') }}</p>-->
+<!--                <br>-->
+<!--                <p> history:  {{ history }}</p>-->
+<!--                <br>-->
+<!--                <p> history value {{ Object.keys(history)[countIndex] }}</p>-->
+<!--                <br>-->
+<!--                <p> {{ spiltWord }}</p>-->
+<!--                <br>-->
+<!--                <p> countIndex: {{ countIndex }}</p>-->
+<!--                <br>-->
+
               </div>
             </div>
           </div>
           <div></div>
         </div>
       </div>
+
 
 
     </div>
