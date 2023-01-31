@@ -8,6 +8,7 @@ import colorPalette from './assets/color-palette-svgrepo-com.svg'
 import crown from './assets/crown-svgrepo-com.svg'
 import home from './assets/home-3-svgrepo-com.svg'
 import user from './assets/user-square-svgrepo-com.svg'
+import restart from './assets/restart-svgrepo-com.svg'
 
 let showModal = ref(false)
 let showPlay = ref(false)
@@ -55,11 +56,35 @@ const isCorrect = (word, letter, index) => {
   }
   return false
 }
+
 const increaseScore = () => {
   score.value <= spiltWord.length - 1 ? score.value++ : score.value
 }
+
+const reScore = () => {
+  score.value = 0
+  letter.value = []
+  countIndex = 0
+  history.value = {}
+  word = []
+  for (let i = 0; i < 20; i++) {
+    let ranWord = wordArr[Math.floor(Math.random() * wordArr.length)]
+    if (word.every(e => e !== ranWord)) {
+      word.push(ranWord)
+    } else {
+      i--
+    }
+    if (word.length > 20) {
+      break
+    }
+  }
+  word = word.join(' ')
+  word.split('').forEach((e, i) => history.value[i] = false)
+  spiltWord = word.split(' ')
+}
+
 window.addEventListener('keydown', (event) => {
-  // console.log(event.key)
+  console.log(event.key)
   if (event.key.length <= 1 && countIndex < Object.keys(history.value).length) {
     letter.value.push(event.key)
     countIndex++
@@ -76,6 +101,21 @@ window.addEventListener('keydown', (event) => {
   if (event.key === ' ' && isCorrect(word, letter.value, countIndex - 1)) {
     increaseScore()
   }
+
+  // if (event.key === 'Alt'){
+  //   reScore()
+  // }
+
+  let check = ref(false)
+  if (event.key === 'Alt') {
+    check.value = true
+    console.log(check.value)
+    if (check.value && event.key === 'Enter') {
+      reScore()
+    }
+  }
+
+
 
 })
 
@@ -176,7 +216,7 @@ window.addEventListener('keydown', (event) => {
         <div class="grid grid-cols-5">
           <div></div>
           <div class="col-span-3">
-            <div class="w-full p-10 bg-orange-200">
+            <div class="w-full p-10">
               <div class="w-full m-5 text-light_gray text-2xl">
                 <h2><b>score: </b> {{ score }}/{{ spiltWord.length }} {{ score === spiltWord.length ? 'finish' : '' }}
                 </h2>
@@ -186,24 +226,29 @@ window.addEventListener('keydown', (event) => {
                     item
                   }}</span>
 
-<!--                <p>{{ letter.join('') }}</p>-->
-<!--                <br>-->
-<!--                <p> history:  {{ history }}</p>-->
-<!--                <br>-->
-<!--                <p> history value {{ Object.keys(history)[countIndex] }}</p>-->
-<!--                <br>-->
-<!--                <p> {{ spiltWord }}</p>-->
-<!--                <br>-->
-<!--                <p> countIndex: {{ countIndex }}</p>-->
-<!--                <br>-->
+                <!--                <p>{{ letter.join('') }}</p>-->
+                <!--                <br>-->
+                <!--                <p> history:  {{ history }}</p>-->
+                <!--                <br>-->
+                <!--                <p> history value {{ Object.keys(history)[countIndex] }}</p>-->
+                <!--                <br>-->
+                <!--                <p> {{ spiltWord }}</p>-->
+                <!--                <br>-->
+                <!--                <p> countIndex: {{ countIndex }}</p>-->
+                <!--                <br>-->
 
               </div>
             </div>
           </div>
           <div></div>
         </div>
-      </div>
+        <div class="flex justify-center">
+          <img :src="restart" alt="restart" class="w-12 h-auto cursor-pointer p-3 cursor-pointer"
+               v-on:click="reScore()">
+        </div>
 
+        <!-- footer -->
+      </div>
 
 
     </div>
