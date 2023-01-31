@@ -4,19 +4,89 @@ import {ref} from "vue";
 import logo from './assets/HomeLogo.svg'
 import questionMark from './assets/questionMark.svg'
 import howToPlay from './assets/HowToPlay.svg'
+import colorPalette from './assets/color-palette-svgrepo-com.svg'
+import crown from './assets/crown-svgrepo-com.svg'
+import home from './assets/home-3-svgrepo-com.svg'
+import user from './assets/user-square-svgrepo-com.svg'
 
 let showModal = ref(false)
+let showPlay = ref(false)
 
 function toggleModal() {
   this.showModal = !this.showModal;
 }
+
+function togglePlay() {
+  this.showPlay = !this.showPlay;
+}
+
+
+// logic
+
+
+import {wordArr} from "@/data/wordArr";
+
+let letter = ref([])
+let countIndex = 0
+let score = ref(0)
+let history = ref({})
+let word = []
+
+for (let i = 0; i < 20; i++) {
+  let ranWord = wordArr[Math.floor(Math.random() * wordArr.length)]
+  if (word.every(e => e !== ranWord)) {
+    word.push(ranWord)
+  } else {
+    i--
+  }
+  if (word.length > 20) {
+    break
+  }
+}
+
+word = word.join(' ')
+word.split('').forEach((e, i) => history.value[i] = false)
+let spiltWord = word.split(' ')
+
+const isCorrect = (word, letter, index) => {
+  if (word[index] === letter[index] && (Object.keys(history.value)[index] === '0' || history.value[index - 1])) {
+    history.value[index] = true
+    return true
+  }
+  return false
+}
+const increaseScore = () => {
+  score.value <= spiltWord.length - 1 ? score.value++ : score.value
+}
+window.addEventListener('keydown', (event) => {
+  // console.log(event.key)
+  if (event.key.length <= 1 && countIndex < Object.keys(history.value).length) {
+    letter.value.push(event.key)
+    countIndex++
+  } else if (event.key === 'Backspace' && !isCorrect(word, letter.value, countIndex - 1)) {
+    letter.value.pop()
+    history.value[countIndex <= 0 ? 0 : countIndex - 1] = false
+    countIndex <= 0 ? countIndex = 0 : countIndex--
+  }
+
+  if (countIndex === Object.keys(history.value).length && isCorrect(word, letter.value, countIndex - 1)) {
+    increaseScore()
+  }
+
+  if (event.key === ' ' && isCorrect(word, letter.value, countIndex - 1)) {
+    increaseScore()
+  }
+
+})
+
 
 </script>
 
 <template>
   <div class="w-screen min-h-screen bg-light_dark">
 
-    <div class="grid grid-rows-2 p-12">
+    <!-- home page -->
+    <div class="grid grid-rows-2 p-12" v-if="!showPlay">
       <div class="grid grid-cols-4 gap-4 self-center max-sm:grid-cols-2 ">
         <div class="max-sm:hidden"></div>
         <div class="w-full h-full col-span-2 mt-20 mb-10">
@@ -35,7 +105,8 @@ function toggleModal() {
               TO PLAY</h1>
           </div>
           <button
-              class="bg-soft_brown text-dark_brown font-bold py-2 px-4 rounded-full w-48 p-3 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300">
+              class="bg-soft_brown text-dark_brown font-bold py-2 px-4 rounded-full w-48 p-3 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300"
+              v-on:click="togglePlay()">
             PLAY
           </button>
         </div>
@@ -43,6 +114,7 @@ function toggleModal() {
       </div>
     </div>
 
+    <!-- pop up-->
     <div>
       <div v-if="showModal"
            class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 justify-center items-center flex max-sm:m-10 max-lg:m-5">
@@ -83,6 +155,44 @@ function toggleModal() {
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- play page -->
+    <div class="">
+      <!-- head -->
+      <div v-if="showPlay">
+        <div class="grid grid-cols-2 p-12">
+          <div class="flex">
+            <img :src="logo" alt="logo" class="w-1/4 h-auto cursor-pointer p-3" v-on:click="togglePlay()">
+            <img :src="home" alt="home" class="w-12 h-auto cursor-pointer p-3" v-on:click="togglePlay()">
+            <img :src="crown" alt="crown" class="w-12 h-auto p-3">
+          </div>
+          <div class="flex justify-end">
+            <img :src="colorPalette" alt="colorPalette" class="w-12 h-auto p-3">
+            <img :src="user" alt="user" class="w-12 h-auto p-3">
+          </div>
+        </div>
+        <!-- body -->
+        <div class="grid grid-cols-5">
+          <div></div>
+          <div class="col-span-3">
+            <div class="w-full p-10 bg-orange-200">
+              <div class="w-full m-5 text-light_gray text-2xl">
+                <h2><b>score: </b> {{ score }}/{{ spiltWord.length }} {{ score === spiltWord.length ? 'finish' : '' }}
+                </h2>
+                <br>
+                <span v-for="(item,index) in word" :key="index"
+                      :class=" isCorrect(word, letter, index)? 'text-white' : index > countIndex - 1? 'text-light_gray opacity-50' : 'text-red' ">{{
+                    item
+                  }}</span>
+              </div>
+            </div>
+          </div>
+          <div></div>
+        </div>
+      </div>
+
+
     </div>
 
   </div>
