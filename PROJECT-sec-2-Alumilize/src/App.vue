@@ -24,7 +24,7 @@ function togglePlay() {
 // logic
 
 
-import {wordArr} from "@/data/wordArr";
+import {wordArr} from "./data/wordArr.js";
 
 let letter = ref([])
 let countIndex = 0
