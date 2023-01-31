@@ -185,9 +185,10 @@ window.addEventListener('keydown', (event) => {
 
     <!-- play page -->
     <div v-if="showPlay">
-      <!-- head -->
-      <div class="grid grid-row">
-        <div class="grid grid-cols-2 p-12">
+
+      <div class="grid grid-rows-3">
+        <!-- head -->
+        <div class="grid grid-cols-2 p-12 h-2">
           <div class="flex">
             <img :src="logo" alt="logo" class="w-1/4 h-auto cursor-pointer p-3" v-on:click="togglePlay()">
             <img :src="home" alt="home" class="w-12 h-auto cursor-pointer p-3" v-on:click="togglePlay()">
@@ -234,8 +235,8 @@ window.addEventListener('keydown', (event) => {
             </button>
           </div>
         </div>
-
         <!-- footer -->
+        <div></div>
       </div>
 
 
