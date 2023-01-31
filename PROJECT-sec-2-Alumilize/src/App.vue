@@ -107,7 +107,7 @@ window.addEventListener('keydown', (event) => {
   // }
 
   let check = ref(false)
-  if (event.key === 'Alt') {
+  if (event.key === 'Control') {
     check.value = true
     console.log(check.value)
     if (check.value && event.key === 'Enter') {
@@ -198,9 +198,9 @@ window.addEventListener('keydown', (event) => {
     </div>
 
     <!-- play page -->
-    <div class="">
+    <div v-if="showPlay">
       <!-- head -->
-      <div v-if="showPlay">
+      <div class="grid grid-row">
         <div class="grid grid-cols-2 p-12">
           <div class="flex">
             <img :src="logo" alt="logo" class="w-1/4 h-auto cursor-pointer p-3" v-on:click="togglePlay()">
@@ -213,40 +213,41 @@ window.addEventListener('keydown', (event) => {
           </div>
         </div>
         <!-- body -->
-        <div class="grid grid-cols-5">
-          <div></div>
-          <div class="col-span-3">
-            <div class="w-full p-10">
-              <div class="w-full m-5 text-light_gray text-2xl">
-                <h2><b>score: </b> {{ score }}/{{ spiltWord.length }} {{ score === spiltWord.length ? 'finish' : '' }}
-                </h2>
-                <br>
-                <span v-for="(item,index) in word" :key="index"
-                      :class=" isCorrect(word, letter, index)? 'text-white' : index > countIndex - 1? 'text-light_gray opacity-50' : 'text-red' ">{{
-                    item
-                  }}</span>
+        <div>
+          <div class="grid grid-cols-5">
+            <div></div>
+            <div class="col-span-3">
+              <div class="w-full p-10">
+                <div class="w-full m-5 text-light_gray text-2xl">
+                  <h2><b>score: </b> {{ score }}/{{ spiltWord.length }} {{ score === spiltWord.length ? 'finish' : '' }}
+                  </h2>
+                  <br>
+                  <span v-for="(item,index) in word" :key="index"
+                        :class=" isCorrect(word, letter, index)? 'text-white' : index > countIndex - 1? 'text-light_gray opacity-50' : 'text-red' ">{{
+                      item
+                    }}</span>
 
-                <!--                <p>{{ letter.join('') }}</p>-->
-                <!--                <br>-->
-                <!--                <p> history:  {{ history }}</p>-->
-                <!--                <br>-->
-                <!--                <p> history value {{ Object.keys(history)[countIndex] }}</p>-->
-                <!--                <br>-->
-                <!--                <p> {{ spiltWord }}</p>-->
-                <!--                <br>-->
-                <!--                <p> countIndex: {{ countIndex }}</p>-->
-                <!--                <br>-->
+                  <!--                <p>{{ letter.join('') }}</p>-->
+                  <!--                <br>-->
+                  <!--                <p> history:  {{ history }}</p>-->
+                  <!--                <br>-->
+                  <!--                <p> history value {{ Object.keys(history)[countIndex] }}</p>-->
+                  <!--                <br>-->
+                  <!--                <p> {{ spiltWord }}</p>-->
+                  <!--                <br>-->
+                  <!--                <p> countIndex: {{ countIndex }}</p>-->
+                  <!--                <br>-->
 
+                </div>
               </div>
             </div>
+            <div></div>
           </div>
-          <div></div>
+          <div class="flex justify-center">
+            <img :src="restart" alt="restart" class="w-12 h-auto cursor-pointer p-3 cursor-pointer"
+                 v-on:click="reScore()">
+          </div>
         </div>
-        <div class="flex justify-center">
-          <img :src="restart" alt="restart" class="w-12 h-auto cursor-pointer p-3 cursor-pointer"
-               v-on:click="reScore()">
-        </div>
-
         <!-- footer -->
       </div>
 
