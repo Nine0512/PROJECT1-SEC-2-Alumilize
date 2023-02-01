@@ -25,6 +25,7 @@ function togglePlay() {
 
 import {wordArr} from "./data/wordArr.js";
 
+
 let letter = ref([])
 let countIndex = 0
 let score = ref(0)
@@ -80,6 +81,26 @@ const reScore = () => {
   word.split('').forEach((e, i) => history.value[i] = false)
   spiltWord = word.split(' ')
 }
+
+score.value = 0
+letter.value = []
+countIndex = 0
+history.value = {}
+word = []
+for (let i = 0; i < 20; i++) {
+  let ranWord = wordArr[Math.floor(Math.random() * wordArr.length)]
+  if (word.every(e => e !== ranWord)) {
+    word.push(ranWord)
+  } else {
+    i--
+  }
+  if (word.length > 20) {
+    break
+  }
+}
+word = word.join(' ')
+word.split('').forEach((e, i) => history.value[i] = false)
+spiltWord = word.split(' ')
 
 window.addEventListener('keydown', (event) => {
   console.log(event.key)
@@ -183,7 +204,7 @@ window.addEventListener('keydown', (event) => {
     <!-- play page -->
     <div v-if="showPlay">
 
-      <div class="grid grid-rows-3">
+      <div class="">
         <!-- head -->
         <div class="grid grid-cols-2 p-12 h-2">
           <div class="flex">
@@ -206,12 +227,12 @@ window.addEventListener('keydown', (event) => {
                   <h2><b>score: </b> {{ score }}/{{ spiltWord.length }} {{ score === spiltWord.length ? 'finish' : '' }}
                   </h2>
                   <br>
-                  <span v-for="(item,index) in word" :key="index"
-                        :class=" isCorrect(word, letter, index)? 'text-white' : index > countIndex - 1? 'text-light_gray opacity-50' : 'text-red' " class="px-0.5"><span
-                      :class="countIndex === index?'' : 'hidden'" class="animate-ping">|</span>{{
+                  <span v-for="(item,index) in word" :key="index" style="padding: 0 0.5px"
+                        :class=" isCorrect(word, letter, index)? 'text-white' : index > countIndex - 1? 'text-light_gray opacity-50' : 'text-red' "><span
+                      :class="countIndex === index? '' : 'hidden' " class="blink_me" style="border-right: 1px solid;"></span>{{
                       item
                     }}</span>
-
+<p>{{ time }}</p>
                   <!--                <p>{{ letter.join('') }}</p>-->
                   <!--                <br>-->
                   <!--                <p> history:  {{ history }}</p>-->
@@ -246,5 +267,14 @@ window.addEventListener('keydown', (event) => {
 <style scoped>
 body {
   font-family: 'Inter', sans-serif;
+}
+.blink_me {
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
 }
 </style>
