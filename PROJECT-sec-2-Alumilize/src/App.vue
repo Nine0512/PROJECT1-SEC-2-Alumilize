@@ -12,6 +12,7 @@ import restart from './assets/restart-svgrepo-com.svg'
 
 let showModal = ref(false)
 let showPlay = ref(false)
+let showScores = ref(false)
 
 function toggleModal() {
   this.showModal = !this.showModal;
@@ -19,6 +20,10 @@ function toggleModal() {
 
 function togglePlay() {
   this.showPlay = !this.showPlay;
+}
+
+function toggleScores() {
+  this.showScores = !this.showScores;
 }
 
 // logic
@@ -66,14 +71,14 @@ const reScore = () => {
   countIndex = 0
   history.value = {}
   word = []
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 1; i++) {
     let ranWord = wordArr[Math.floor(Math.random() * wordArr.length)]
     if (word.every(e => e !== ranWord)) {
       word.push(ranWord)
     } else {
       i--
     }
-    if (word.length > 20) {
+    if (word.length > 1) {
       break
     }
   }
@@ -87,14 +92,14 @@ letter.value = []
 countIndex = 0
 history.value = {}
 word = []
-for (let i = 0; i < 20; i++) {
+for (let i = 0; i < 1; i++) {
   let ranWord = wordArr[Math.floor(Math.random() * wordArr.length)]
   if (word.every(e => e !== ranWord)) {
     word.push(ranWord)
   } else {
     i--
   }
-  if (word.length > 20) {
+  if (word.length > 1) {
     break
   }
 }
@@ -102,11 +107,22 @@ word = word.join(' ')
 word.split('').forEach((e, i) => history.value[i] = false)
 spiltWord = word.split(' ')
 
+
+let startTime
+let endTime
+let time = ref(0)
+let wpm = ref(0)
+
+
 window.addEventListener('keydown', (event) => {
-  console.log(event.key)
+  // console.log(event.key)
+
   if (event.key.length <= 1 && countIndex < Object.keys(history.value).length) {
     letter.value.push(event.key)
     countIndex++
+    if (countIndex === 1) {
+      startTime = Date.now()
+    }
   } else if (event.key === 'Backspace' && !isCorrect(word, letter.value, countIndex - 1)) {
     letter.value.pop()
     history.value[countIndex <= 0 ? 0 : countIndex - 1] = false
@@ -115,14 +131,18 @@ window.addEventListener('keydown', (event) => {
 
   if (countIndex === Object.keys(history.value).length && isCorrect(word, letter.value, countIndex - 1)) {
     increaseScore()
+    endTime = Date.now()
+    time = ref(Math.floor((endTime - startTime) / 1000))
+    wpm = ref(Math.floor((word.length / 5) / (time.value / 60)))
+    toggleScores()
   }
 
   if (event.key === ' ' && isCorrect(word, letter.value, countIndex - 1)) {
     increaseScore()
   }
 
-
 })
+
 
 </script>
 
@@ -229,10 +249,11 @@ window.addEventListener('keydown', (event) => {
                   <br>
                   <span v-for="(item,index) in word" :key="index" style="padding: 0 0.5px"
                         :class=" isCorrect(word, letter, index)? 'text-white' : index > countIndex - 1? 'text-light_gray opacity-50' : 'text-red' "><span
-                      :class="countIndex === index? '' : 'hidden' " class="blink_me" style="border-right: 1px solid;"></span>{{
+                      :class="countIndex === index? '' : 'hidden' " class="blink_me"
+                      style="border-right: 1px solid;"></span>{{
                       item
                     }}</span>
-<p>{{ time }}</p>
+                  <!--<p>{{ time }}</p>-->
                   <!--                <p>{{ letter.join('') }}</p>-->
                   <!--                <br>-->
                   <!--                <p> history:  {{ history }}</p>-->
@@ -259,6 +280,12 @@ window.addEventListener('keydown', (event) => {
         <div></div>
       </div>
 
+            <div class="text-white">
+              <h1>Time : {{ time }}</h1>
+              <h1>WPM : {{ wpm }}</h1>
+            </div>
+
+
     </div>
 
   </div>
@@ -268,6 +295,7 @@ window.addEventListener('keydown', (event) => {
 body {
   font-family: 'Inter', sans-serif;
 }
+
 .blink_me {
   animation: blinker 1s linear infinite;
 }
