@@ -1,44 +1,47 @@
 <script setup>
-import { looseIndexOf } from '@vue/shared';
 import { ref } from 'vue';
 
 
-let words = [];
-
-
-
-
-
+let allWords = []
+let words = []
 let showWords = ref('')
+let num = 1
+let index = ref(0)
+let countIndex = ref(0)
 
 async function getRandomWord() {
-  const response = await fetch("https://random-word-api.herokuapp.com/word?number=1");
-  const data = await response.json()
+  const response = await fetch("https://random-word-api.herokuapp.com/word?number=1000");
+  const data = await response.json();
   return data;
 }
 
 async function getAndLogRandomWords() {
     const word = await getRandomWord()
-    words = []
-    words.push(word)
-    showWords.value = words[0].join(' ')
-    // console.log(showWords.value.charAt());
-    // console.log(typeof showWords.value);
+    allWords = word
+    useWord(num)
 }
 
 getAndLogRandomWords()
 
-//Benz Area
+function useWord(num){
+    words.length=0
+    for (let i = 0; i < num; i++) {
+      let ranWord = allWords[Math.floor(Math.random() * allWords.length)]
+      words.push(ranWord)
+    }
+    console.log(words)
+    showWords.value = words.join(' ')
+}
 
-// เช็คว่ามีคำที่เราพิมพ์เข้ามาใน words หรือไม่ถ้าใช่ให้เพิ่ม index ขึ้น 1
-// event.key คือ คำที่เราพิมพ์เข้ามา
-// words[0].join(' ') คือ คำที่เราได้จาก api มาเป็น array แล้วเอามา join เป็น string
-// charAt(index) คือ ตัวที่ index นั้นๆ ใน string
-let index = ref(0)
-let countIndex = ref(0)
+// benz
+
+function deleteWord(){
+    words.pop()
+    showWords.value = words.join(' ')
+}
 
 window.addEventListener( 'keydown',  event => {
-if( event.key === words[0].join(' ').charAt( index.value  ) ){
+if( event.key === words.join(' ').charAt( index.value ) ){
     console.log('correct');
     index.value++;
    
@@ -47,29 +50,33 @@ if( event.key === words[0].join(' ').charAt( index.value  ) ){
    
 } 
 countIndex.value++;
-// console.log(index);
-// console.log(countIndex);
 
 
+if( words.join(' ').length === index.value ){
+    console.log('finish');
+    index.value = 0;
+    useWord(num)
+}
 
-if( showWords.value.length === index.value ){
-    console.log('end');
-    
+if( event.key === 'Delete' ){
+    deleteWord()
+    index.value--;
+    countIndex.value--;
 }
 }
-);
+)
 
-// let um =  showWords.length === index ? true : false
+
+
+
 
 </script>
- 
-<template>  
-<div class="pl-10 ; pt-10">
-  <button @click="getAndLogRandomWords" class="bg-dark_brown hover:bg-black text-white font-bold py-2 px-4 rounded">Get Random Word</button>
-  
-  <!-- //ถ้า showWords มีค่าเท่ากับ index ให้พื้นหลังเป็นสีเขียวถ้าไม่ใช้ให้เป็นสีแดง -->
-  <div v-if="um" >
-  <p :class="" >{{ showWords }}</p>
+  <template>
+<div >
+
+    <button @click="useWord(num)" class="bg-black hover:bg-dark_brown text-white font-bold py-2 px-4 rounded">Get Random Word</button>
+  <div>
+  <p>{{ showWords }}</p>
   </div>
 
   <div>
@@ -78,7 +85,8 @@ if( showWords.value.length === index.value ){
 
   <p>countIndex : {{ countIndex }}</p>
 </div>
-</template>
+
+  </template>
  
 <style scoped>
 
