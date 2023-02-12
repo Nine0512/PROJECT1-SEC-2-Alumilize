@@ -5,7 +5,7 @@ import { ref } from 'vue';
 let allWords = []
 let words = []
 let showWords = ref('')
-let num = 2
+let num = 20
 let index = ref(0)
 let countIndex = ref(0)
 
@@ -73,20 +73,19 @@ if( index.value === words.join(' ').length ){
 
 </script>
   <template>
-<div >
-
-    <button @click="useWord(num)" class="bg-black hover:bg-dark_brown text-white font-bold py-2 px-4 rounded">Get Random Word</button>
+    <div class="w-full h-screen bg-black">
+<div class="flex flex-col items-center justify-center h-full">
   <div>
-  <p>{{ showWords }}</p>
+  <p class="text-white ">{{ showWords }}</p>
+  </div>
+  <button @click="useWord(num)" class="bg-black hover:bg-dark_brown text-white font-bold py-2 px-4 rounded">Get Random Word</button>
+  <div>
+  <p class="text-white">index : {{  index }}</p>
   </div>
 
-  <div>
-  <p>index : {{  index }}</p>
-  </div>
-
-  <p>countIndex : {{ countIndex }}</p>
+  <p class="text-white ">countIndex : {{ countIndex }}</p>
 </div>
-
+</div>
   </template>
  
 <style scoped>
