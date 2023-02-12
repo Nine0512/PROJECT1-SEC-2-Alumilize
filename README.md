@@ -1,3 +1,5 @@
+![logo](https://github.com/Nine0512/PROJECT1-SEC-2-Alumilize/blob/main/.logo/HomeLogo.svg)
+
 # PROJECT1-SEC-2-Alumilize
 
 ## Prototype TestType
