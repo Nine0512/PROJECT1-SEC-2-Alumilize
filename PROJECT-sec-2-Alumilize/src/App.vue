@@ -35,10 +35,6 @@ function useWord(num){
 
 // benz
 
-function deleteWord(){
-    words.pop()
-    showWords.value = words.join(' ')
-}
 
 window.addEventListener( 'keydown',  event => {
 if( event.key === words.join(' ').charAt( index.value ) ){
@@ -47,28 +43,26 @@ if( event.key === words.join(' ').charAt( index.value ) ){
    
 } else  {
     console.log('wrong');
+    
    
 } 
 countIndex.value++;
 
-
-if( words.join(' ').length === index.value ){
-    console.log('finish');
+if( index.value === words.join(' ').length ){
+    console.log('next word');
     index.value = 0;
+    countIndex.value = 0;
     useWord(num)
 }
 
-if( event.key === 'Delete' ){
-    deleteWord()
-    index.value--;
-    countIndex.value--;
+if ( event.key === 'Delete' || event.key != words.join(' ').charAt( index.value ) ) {
+    words.join(' ').slice(0, -1)
+    // console.log(words)
+    showWords.value = words.join(' ')
+   
 }
-}
+}  
 )
-
-
-
-
 
 </script>
   <template>
