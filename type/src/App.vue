@@ -1,9 +1,6 @@
 <script setup>
-
 import {ref} from 'vue'
-
 import {allWord} from "./data/allWord.js"
-
 
 // let getWord = async (wordCount) => {
 //   let response = await fetch(`https://random-word-api.herokuapp.com/word?number=${wordCount}`)
@@ -22,7 +19,6 @@ let time
 let wpm
 let num = ref(20)
 
-
 let randomWord = (num) => {
   for (let i = 0; i < num; i++) {
     let random = Math.floor(Math.random() * allWord.length)
@@ -32,22 +28,17 @@ let randomWord = (num) => {
       word.value.push(allWord[random])
     }
   }
-
 }
 
 randomWord(num.value)
 
-// ["to","meet","you"]
-
 word.value = word.value.join(' ')
-
 let check = Array.from(word.value).map((key) => {
   return {
     letter: key,
     status: false
   }
 })
-
 let reset = () => {
   count.value = 0
   status = true
@@ -63,23 +54,20 @@ let reset = () => {
     }
   })
 }
-
 let changeNumOfChar = (numOfChar) => {
   num.value = numOfChar
   reset()
 }
-
 let checkLetter = (letter, index) => {
   if (letter === check[index].letter) {
     check[index].status = true
   }
 }
-
 window.addEventListener('keydown', (e) => {
   if (status) {
     if (e.key.length === 1 && count.value > 0 && count.value < word.value.length) {
       if (check[count.value - 1].status === false && count.value < word.value.length) {
-          count.value++
+        count.value++
       } else {
         checkLetter(e.key, count.value)
         count.value++
@@ -107,7 +95,6 @@ window.addEventListener('keydown', (e) => {
     }
   }
 })
-
 </script>
 
 <template>
@@ -134,5 +121,4 @@ window.addEventListener('keydown', (e) => {
 </template>
 
 <style scoped>
-
 </style>

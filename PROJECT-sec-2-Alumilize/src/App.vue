@@ -1,30 +1,30 @@
 <script setup>
 
 import {ref} from "vue";
-import logo from './assets/HomeLogo.svg'
-import questionMark from './assets/questionMark.svg'
-import howToPlay from './assets/HowToPlay.svg'
-import colorPalette from './assets/color-palette-svgrepo-com.svg'
-import crown from './assets/crown-svgrepo-com.svg'
-import home from './assets/home-3-svgrepo-com.svg'
-import user from './assets/user-square-svgrepo-com.svg'
-import restart from './assets/restart-svgrepo-com.svg'
+const logo = 'images/HomeLogo.svg'
+const questionMark = 'images/questionMark.svg'
+const howToPlay = 'images/HowToPlay.svg'
+const colorPalette = 'images/color-palette-svgrepo-com.svg'
+const crown = 'images/crown-svgrepo-com.svg'
+const home = 'images/home-3-svgrepo-com.svg'
+const user = 'images/user-square-svgrepo-com.svg'
+const restart = 'images/restart-svgrepo-com.svg'
 
 let showModal = ref(false)
 let showPlay = ref(false)
 let showScores = ref(false)
 
 function toggleModal() {
-  this.showModal = !this.showModal;
+  showModal.value = !showModal.value;
 }
 
 function togglePlay() {
-  this.showPlay = !this.showPlay;
+  showPlay.value = !showPlay.value;
 }
 
-function toggleScores() {
-  this.showScores = !this.showScores;
-}
+// function toggleScores() {
+//   showScores = !showScores;
+// }
 
 // logic
 
@@ -71,14 +71,14 @@ const reScore = () => {
   countIndex = 0
   history.value = {}
   word = []
-  for (let i = 0; i < 1; i++) {
+  for (let i = 0; i < 20; i++) {
     let ranWord = wordArr[Math.floor(Math.random() * wordArr.length)]
     if (word.every(e => e !== ranWord)) {
       word.push(ranWord)
     } else {
       i--
     }
-    if (word.length > 1) {
+    if (word.length > 20) {
       break
     }
   }
@@ -92,14 +92,14 @@ letter.value = []
 countIndex = 0
 history.value = {}
 word = []
-for (let i = 0; i < 1; i++) {
+for (let i = 0; i < 20; i++) {
   let ranWord = wordArr[Math.floor(Math.random() * wordArr.length)]
   if (word.every(e => e !== ranWord)) {
     word.push(ranWord)
   } else {
     i--
   }
-  if (word.length > 1) {
+  if (word.length > 20) {
     break
   }
 }
@@ -292,9 +292,6 @@ window.addEventListener('keydown', (event) => {
 </template>
 
 <style scoped>
-body {
-  font-family: 'Inter', sans-serif;
-}
 
 .blink_me {
   animation: blinker 1s linear infinite;
