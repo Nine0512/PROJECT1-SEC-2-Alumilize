@@ -5,7 +5,7 @@ import { ref } from 'vue';
 let allWords = []
 let words = []
 let showWords = ref('')
-let num = 1
+let num = 2
 let index = ref(0)
 let countIndex = ref(0)
 
@@ -35,16 +35,26 @@ function useWord(num){
 
 // benz
 
+const correctWord = (word, index, typing) => {
+  if (word[index] === typing[index]) {
+    return true;
+  }
+  return false;
+}
+
+
 
 window.addEventListener( 'keydown',  event => {
 if( event.key === words.join(' ').charAt( index.value ) ){
-    console.log('correct');
+   correctWord.value = true;
     index.value++;
    
 } else  {
-    console.log('wrong');
-    
-   
+  ( event.key === 'Backspace' && event.key !== words.join(' ').charAt( index.value ) )
+    // words.value = words.slice(0, -1)
+    countIndex.value--;
+    console.log('backspace');
+
 } 
 countIndex.value++;
 
@@ -55,14 +65,11 @@ if( index.value === words.join(' ').length ){
     useWord(num)
 }
 
-if ( event.key === 'Delete' || event.key != words.join(' ').charAt( index.value ) ) {
-    words.join(' ').slice(0, -1)
-    // console.log(words)
-    showWords.value = words.join(' ')
-   
-}
+
 }  
 )
+
+
 
 </script>
   <template>
