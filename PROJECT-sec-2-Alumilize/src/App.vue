@@ -37,24 +37,30 @@ function useWord(num){
 // benz
 
 let typing = ref('')
+let history = ref([])
 
-const correctWord = (words, index, typing) => {
-  if( words === typing.charAt(index)){
-    return words === typing.charAt(index)
+//เช็คถูกผิด
+let correctWord = ( word, input ,index ) => {
+  if( word  === input[index] ){
+    console.log('true');
+    return true;
   }
+  console.log('false');
+  return false;
 }
 
-window.addEventListener( 'keypress',  event => {
-  typing.value = event.key
-if( event.key === words.join(' ').charAt( index.value ) ){
-   correctWord.value = true;
-    index.value++;
+
+window.addEventListener( 'keydown',  event => {
+  
+if( event.key.length === 1){
+   history.value.push(event.key)
+   console.log(history.value);
+   countIndex.value++;
    
-} else  {
-  ( event.key === 'Backspace' && event.key !== words.join(' ').charAt( index.value ) )
-    words.value = words.slice(0, -1)
-    // countIndex.value--;
-    console.log('backspace');
+} else if ( event.key === 'Backspace'  )   {
+  history.value.pop()
+  console.log(history.value);
+  countIndex.value--;
 } 
 countIndex.value++;
 
@@ -64,25 +70,17 @@ if( index.value === words.join(' ').length ){
     countIndex.value = 0;
     useWord(num)
 }
-
-history = []
-let logHis = typing.push(history)
-
-}  
+}
 )
-
-
 
 </script>
   <template>
     <div class="w-full h-screen bg-black">
-<div class=" items-center justify-center h-full">
+<div class=" p-20  h-full">
 
-  <span v-for="(showWords, index) in words.join('')" :key="index" :class="correctWord(words, index, typing)? 'text-red' : index > countIndex - 1? 'text-light_gray' : 'text-green'">
-     {{ showWords }}
+  <span v-for="(item, index) in showWords" :key="index" :class="correctWord(item, history, index )? 'text-green' : index > countIndex - 1? 'text-light_gray' : 'text-red'">
+     {{ item }}
   </span>
-
-  <span> {{ showWords}}</span>
 
   <button @click="useWord(num)" class="bg-black hover:bg-dark_brown text-white font-bold py-2 px-4 rounded">Get Random Word</button>
   <div>
@@ -97,3 +95,7 @@ let logHis = typing.push(history)
 <style scoped>
 
 </style>
+
+
+
+<!-- issue ตน.การเปลี่ยนสี่ยังไม่ถุก -->
