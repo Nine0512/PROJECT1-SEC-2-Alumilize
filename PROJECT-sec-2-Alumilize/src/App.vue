@@ -1,11 +1,12 @@
 <script setup>
 import { ref } from 'vue';
 
+// non
 
 let allWords = []
 let words = []
 let showWords = ref('')
-let num = 20
+let num = 1
 let index = ref(0)
 let countIndex = ref(0)
 
@@ -35,26 +36,25 @@ function useWord(num){
 
 // benz
 
-const correctWord = (word, index, typing) => {
-  if (word[index] === typing[index]) {
-    return true;
+let typing = ref('')
+
+const correctWord = (words, index, typing) => {
+  if( words === typing.charAt(index)){
+    return words === typing.charAt(index)
   }
-  return false;
 }
 
-
-
-window.addEventListener( 'keydown',  event => {
+window.addEventListener( 'keypress',  event => {
+  typing.value = event.key
 if( event.key === words.join(' ').charAt( index.value ) ){
    correctWord.value = true;
     index.value++;
    
 } else  {
   ( event.key === 'Backspace' && event.key !== words.join(' ').charAt( index.value ) )
-    // words.value = words.slice(0, -1)
-    countIndex.value--;
+    words.value = words.slice(0, -1)
+    // countIndex.value--;
     console.log('backspace');
-
 } 
 countIndex.value++;
 
@@ -65,6 +65,8 @@ if( index.value === words.join(' ').length ){
     useWord(num)
 }
 
+history = []
+let logHis = typing.push(history)
 
 }  
 )
@@ -74,10 +76,14 @@ if( index.value === words.join(' ').length ){
 </script>
   <template>
     <div class="w-full h-screen bg-black">
-<div class="flex flex-col items-center justify-center h-full">
-  <div>
-  <p class="text-white ">{{ showWords }}</p>
-  </div>
+<div class=" items-center justify-center h-full">
+
+  <span v-for="(showWords, index) in words.join('')" :key="index" :class="correctWord(words, index, typing)? 'text-red' : index > countIndex - 1? 'text-light_gray' : 'text-green'">
+     {{ showWords }}
+  </span>
+
+  <span> {{ showWords}}</span>
+
   <button @click="useWord(num)" class="bg-black hover:bg-dark_brown text-white font-bold py-2 px-4 rounded">Get Random Word</button>
   <div>
   <p class="text-white">index : {{  index }}</p>
