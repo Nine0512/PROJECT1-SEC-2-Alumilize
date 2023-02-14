@@ -40,6 +40,8 @@ let endTime = ref(0)
 let time
 let wpm
 
+let interval
+
 // benz
 let history = ref([])
 //เช็คถูกผิด
@@ -52,6 +54,18 @@ let correctWord = (word, input, index) => {
   return false;
 }
 let func = event => {
+
+  if(history.value.length === 1) {
+    interval = setInterval(() => {
+      if (timer.value === 0) {
+        clearInterval(interval)
+        window.removeEventListener('keydown',func)
+      } else {
+        timer.value--
+        console.log(timer)
+      }
+    }, 1000)
+  }
 
 if (event.key.length === 1) {
   history.value.push(event.key)
@@ -85,15 +99,7 @@ if (index.value === words.join(' ').length) {
 window.addEventListener('keydown', func)
 
 // win จับเวลา
-let interval = setInterval(() => {
-  if (timer.value === 0) {
-    clearInterval(interval)
-    window.removeEventListener('keydown',func)
-  } else {
-    timer.value--
-    console.log(timer)
-  }
-}, 1000)
+
 
 
 </script>
