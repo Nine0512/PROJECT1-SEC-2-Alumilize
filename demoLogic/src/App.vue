@@ -33,6 +33,13 @@ function useWord(num) {
   console.log(showWords.value)
 }
 
+// nine
+
+let startTime = ref(0)
+let endTime = ref(0)
+let time
+let wpm
+
 // benz
 let history = ref([])
 //เช็คถูกผิด
@@ -51,6 +58,9 @@ if (event.key.length === 1) {
   //  console.log(history.value);
   index.value++;
   countIndex.value++;
+  if (countIndex.value === 1){
+    startTime = new Date()
+  }
 
 } else if (event.key === 'Backspace') {
   history.value.pop()
@@ -65,21 +75,27 @@ if (index.value === words.join(' ').length) {
   index.value = 0;
   countIndex.value = 0;
   history.value = []
+  endTime = new Date()
+  time = ref((endTime - startTime) / 1000)
+  wpm = ref(Math.floor((words.join(' ').length / 5) / (time.value / 60)))
   useWord(num)
 }
-if(timer === 0){}
+
 }
 window.addEventListener('keydown', func)
-//win จับเวลา
+
+// win จับเวลา
 let interval = setInterval(() => {
   if (timer.value === 0) {
     clearInterval(interval)
-    window.removeEventListener('keydown',func)                
+    window.removeEventListener('keydown',func)
   } else {
     timer.value--
     console.log(timer)
-  }         
+  }
 }, 1000)
+
+
 </script>
 
 <template>
@@ -97,6 +113,10 @@ let interval = setInterval(() => {
       </div>
     </div>
     <div class="place-content-center flex">
+      <div class="text-white">
+        <h1>Time : {{ time }}</h1>
+        <h1>WPM : {{ wpm }}</h1>
+      </div>
       <button @click="useWord(num)" class="bg-black hover:bg-dark_brown text-white font-bold py-2 px-4 rounded">Get Random
         Word
       </button>
