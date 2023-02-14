@@ -84,11 +84,11 @@ let interval = setInterval(() => {
   <div class="bg-black w-screen h-screen space-x-5 ">
     <div class="justify-center flex w-full">
       <div class="font-bold pt-56">
+      <span class="text-white justify-center">{{ timer }}</span><br>
       <span v-for="(item, index) in showWords" :key="index"
             :class="correctWord(item, history, index )? 'text-green-600' :  index>countIndex-1 ? 'text-gray-400' : 'text-red-800'">{{
           item
         }}</span>
-       <span>{{ timer }}</span>
       </div>
     </div>
     <div class="justify-center flex">
