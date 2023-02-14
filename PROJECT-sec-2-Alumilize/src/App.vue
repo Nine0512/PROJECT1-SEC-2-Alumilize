@@ -6,7 +6,7 @@ import { ref } from 'vue';
 let allWords = []
 let words = []
 let showWords = ref('')
-let num = 2
+let num = 1
 let index = ref(0)
 let countIndex = ref(0)
 
@@ -40,7 +40,7 @@ let history = ref([])
 
 //เช็คถูกผิด
 let correctWord = ( word, input ,index ) => {
-  if( word[index]  === input[index] ){
+  if( word  === input[index] ){
     console.log('true');
     return true;
   } 
@@ -57,7 +57,7 @@ if( event.key.length === 1){
    index.value++;
    countIndex.value++;
    
-} else if ( event.key === 'Backspace'  )   {
+} else if ( event.key === 'Backspace')   {
   history.value.pop()
   console.log(history.value)
   if(countIndex.value > 0){
@@ -70,24 +70,22 @@ if( index.value === words.join(' ').length ){
     console.log('next word');
     index.value = 0;
     countIndex.value = 0;
+    history.value = []
     useWord(num)
+   
 }
 }
 )
 
 </script>
   <template>
-    <div class="w-full h-screen bg-black">
-<div class=" p-20  h-full">
+    <div class=" flex flex-col w-full h-screen bg-black">
+<div class=" p-20  h-full text-white">
 
-  <span v-for="(item, index) in showWords"  :key="index" :class="correctWord(item, history, index )? 'text-green' : index > countIndex - 1 ? 'text-light_gray' : 'text-red'" class="text-light_gray">
-     {{ item }}
-  </span>
+  <span v-for="(item, index) in showWords"  :key="index" :class="correctWord(item, history, index )? 'text-green' :  index>countIndex-1 ? 'text-light_gray-500' : 'text-red'" >{{ item }}</span>
 
   <button @click="useWord(num)" class="bg-black hover:bg-dark_brown text-white font-bold py-2 px-4 rounded">Get Random Word</button>
-  <div>
-  <p class="text-white">index : {{  index }}</p>
-  </div>
+ 
 
   <p class="text-white ">countIndex : {{ countIndex }}</p>
 </div>
@@ -99,5 +97,3 @@ if( index.value === words.join(' ').length ){
 </style>
 
 
-
-<!-- issue ตน.การเปลี่ยนสี่ยังไม่ถุก -->
