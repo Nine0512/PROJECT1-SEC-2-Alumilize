@@ -6,7 +6,7 @@ import { ref } from 'vue';
 let allWords = []
 let words = []
 let showWords = ref('')
-let num = 1
+let num = 2
 let index = ref(0)
 let countIndex = ref(0)
 
@@ -36,15 +36,14 @@ function useWord(num){
 
 // benz
 
-let typing = ref('')
 let history = ref([])
 
 //เช็คถูกผิด
 let correctWord = ( word, input ,index ) => {
-  if( word  === input[index] ){
+  if( word[index]  === input[index] ){
     console.log('true');
     return true;
-  }
+  } 
   console.log('false');
   return false;
 }
@@ -55,14 +54,17 @@ window.addEventListener( 'keydown',  event => {
 if( event.key.length === 1){
    history.value.push(event.key)
    console.log(history.value);
+   index.value++;
    countIndex.value++;
    
 } else if ( event.key === 'Backspace'  )   {
   history.value.pop()
-  console.log(history.value);
-  countIndex.value--;
+  console.log(history.value)
+  if(countIndex.value > 0){
+    countIndex.value--;
+    index.value--;
+  }
 } 
-countIndex.value++;
 
 if( index.value === words.join(' ').length ){
     console.log('next word');
@@ -78,7 +80,7 @@ if( index.value === words.join(' ').length ){
     <div class="w-full h-screen bg-black">
 <div class=" p-20  h-full">
 
-  <span v-for="(item, index) in showWords" :key="index" :class="correctWord(item, history, index )? 'text-green' : index > countIndex - 1? 'text-light_gray' : 'text-red'">
+  <span v-for="(item, index) in showWords"  :key="index" :class="correctWord(item, history, index )? 'text-green' : index > countIndex - 1 ? 'text-light_gray' : 'text-red'" class="text-light_gray">
      {{ item }}
   </span>
 
