@@ -44,30 +44,32 @@ let correctWord = (word, input, index) => {
   console.log('false');
   return false;
 }
-window.addEventListener('keydown', event => {
+let func = event => {
 
-      if (event.key.length === 1) {
-        history.value.push(event.key)
-        //  console.log(history.value);
-        index.value++;
-        countIndex.value++;
+if (event.key.length === 1) {
+  history.value.push(event.key)
+  //  console.log(history.value);
+  index.value++;
+  countIndex.value++;
 
-      } else if (event.key === 'Backspace') {
-        history.value.pop()
-        // console.log(history.value)
-        if (countIndex.value > 0) {
-          countIndex.value--;
-          index.value--;
-        }
-      }
-      if (index.value === words.join(' ').length) {
-        // console.log('next word');
-        index.value = 0;
-        countIndex.value = 0;
-        history.value = []
-        useWord(num)
-      }
-    })
+} else if (event.key === 'Backspace') {
+  history.value.pop()
+  // console.log(history.value)
+  if (countIndex.value > 0) {
+    countIndex.value--;
+    index.value--;
+  }
+}
+if (index.value === words.join(' ').length) {
+  // console.log('next word');
+  index.value = 0;
+  countIndex.value = 0;
+  history.value = []
+  useWord(num)
+}
+if(timer === 0){}
+}
+window.addEventListener('keydown', func)
 //win จับเวลา
 let interval = setInterval(() => {
   if (timer.value === 0) {
