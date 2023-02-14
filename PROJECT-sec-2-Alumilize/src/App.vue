@@ -27,122 +27,95 @@ function togglePlay() {
 // }
 
 // logic
+import {allWord} from "@/data/allWord";
 
-import {wordArr} from "./data/wordArr.js";
 
+let word = ref([])
+let count = ref(0)
+let wordCount = ref(0)
+let status = true
+let startTime = ref(0)
+let endTime = ref(0)
+let time
+let wpm
+let num = ref(20)
 
-let letter = ref([])
-let countIndex = 0
-let score = ref(0)
-let history = ref({})
-let word = []
-
-for (let i = 0; i < 20; i++) {
-  let ranWord = wordArr[Math.floor(Math.random() * wordArr.length)]
-  if (word.every(e => e !== ranWord)) {
-    word.push(ranWord)
-  } else {
-    i--
-  }
-  if (word.length > 20) {
-    break
-  }
-}
-
-word = word.join(' ')
-word.split('').forEach((e, i) => history.value[i] = false)
-let spiltWord = word.split(' ')
-
-const isCorrect = (word, letter, index) => {
-  if (word[index] === letter[index] && (Object.keys(history.value)[index] === '0' || history.value[index - 1])) {
-    history.value[index] = true
-    return true
-  }
-  return false
-}
-
-const increaseScore = () => {
-  score.value <= spiltWord.length - 1 ? score.value++ : score.value
-}
-
-const reScore = () => {
-  score.value = 0
-  letter.value = []
-  countIndex = 0
-  history.value = {}
-  word = []
-  for (let i = 0; i < 20; i++) {
-    let ranWord = wordArr[Math.floor(Math.random() * wordArr.length)]
-    if (word.every(e => e !== ranWord)) {
-      word.push(ranWord)
-    } else {
+let randomWord = (num) => {
+  for (let i = 0; i < num; i++) {
+    let random = Math.floor(Math.random() * allWord.length)
+    if (word.value.includes(allWord[random])) {
       i--
-    }
-    if (word.length > 20) {
-      break
+    } else {
+      word.value.push(allWord[random])
     }
   }
-  word = word.join(' ')
-  word.split('').forEach((e, i) => history.value[i] = false)
-  spiltWord = word.split(' ')
 }
 
-score.value = 0
-letter.value = []
-countIndex = 0
-history.value = {}
-word = []
-for (let i = 0; i < 20; i++) {
-  let ranWord = wordArr[Math.floor(Math.random() * wordArr.length)]
-  if (word.every(e => e !== ranWord)) {
-    word.push(ranWord)
-  } else {
-    i--
+randomWord(num.value)
+
+word.value = word.value.join(' ')
+let check = Array.from(word.value).map((key) => {
+  return {
+    letter: key,
+    status: false
   }
-  if (word.length > 20) {
-    break
-  }
-}
-word = word.join(' ')
-word.split('').forEach((e, i) => history.value[i] = false)
-spiltWord = word.split(' ')
-
-
-let startTime
-let endTime
-let time = ref(0)
-let wpm = ref(0)
-
-
-window.addEventListener('keydown', (event) => {
-  // console.log(event.key)
-
-  if (event.key.length <= 1 && countIndex < Object.keys(history.value).length) {
-    letter.value.push(event.key)
-    countIndex++
-    if (countIndex === 1) {
-      startTime = Date.now()
-    }
-  } else if (event.key === 'Backspace' && !isCorrect(word, letter.value, countIndex - 1)) {
-    letter.value.pop()
-    history.value[countIndex <= 0 ? 0 : countIndex - 1] = false
-    countIndex <= 0 ? countIndex = 0 : countIndex--
-  }
-
-  if (countIndex === Object.keys(history.value).length && isCorrect(word, letter.value, countIndex - 1)) {
-    increaseScore()
-    endTime = Date.now()
-    time = ref(Math.floor((endTime - startTime) / 1000))
-    wpm = ref(Math.floor((word.length / 5) / (time.value / 60)))
-    toggleScores()
-  }
-
-  if (event.key === ' ' && isCorrect(word, letter.value, countIndex - 1)) {
-    increaseScore()
-  }
-
 })
-
+let reset = () => {
+  count.value = 0
+  status = true
+  word.value = []
+  check = {}
+  wordCount.value = 0
+  randomWord(num.value)
+  word.value = word.value.join(' ')
+  check = word.value.split('').map((key) => {
+    return {
+      letter: key,
+      status: false
+    }
+  })
+}
+let changeNumOfChar = (numOfChar) => {
+  num.value = numOfChar
+  reset()
+}
+let checkLetter = (letter, index) => {
+  if (letter === check[index].letter) {
+    check[index].status = true
+  }
+}
+window.addEventListener('keydown', (e) => {
+  if (status) {
+    if (e.key.length === 1 && count.value > 0 && count.value < word.value.length) {
+      if (check[count.value - 1].status === false && count.value < word.value.length) {
+        count.value++
+      } else {
+        checkLetter(e.key, count.value)
+        count.value++
+      }
+      if (e.key === ' ' && check[count.value - 1].letter === ' ' && check[count.value - 1].status === true) {
+        wordCount.value++
+      }
+    }
+    if (e.key.length === 1 && count.value === 0) {
+      checkLetter(e.key, count.value)
+      count.value++
+      if (count.value === 1) {
+        startTime = new Date()
+      }
+    }
+    if (e.key === 'Backspace' && count.value > 0 && check[count.value - 1].status === false) {
+      count.value--
+    }
+    if (check.every((item) => item.status === true)) {
+      endTime = new Date()
+      time = ref((endTime - startTime) / 1000)
+      wpm = ref(Math.floor((word.value.length / 5) / (time.value / 60)))
+      wordCount.value = num.value
+      status = false
+    }
+  }
+})
 
 </script>
 
@@ -224,7 +197,7 @@ window.addEventListener('keydown', (event) => {
     <!-- play page -->
     <div v-if="showPlay">
 
-      <div class="">
+      <div class="grid grid-cols-1">
         <!-- head -->
         <div class="grid grid-cols-2 p-12 h-2">
           <div class="flex">
@@ -239,39 +212,27 @@ window.addEventListener('keydown', (event) => {
         </div>
         <!-- body -->
         <div>
-          <div class="grid grid-cols-5">
-            <div></div>
-            <div class="col-span-3">
+          <div class="grid grid-rows-1">
+            <div class="w-4/5 flex justify-self-center">
               <div class="w-full p-10">
                 <div class="w-full m-5 text-light_gray text-2xl">
-                  <h2><b>score: </b> {{ score }}/{{ spiltWord.length }} {{ score === spiltWord.length ? 'finish' : '' }}
-                  </h2>
+                  <button @click="changeNumOfChar(20)" class="p-2 m-3 border-white border-2 border-solid rounded">20</button>
+                  <button @click="changeNumOfChar(50)" class="p-2 m-3 border-white border-2 border-solid rounded">50</button>
+                  <button @click="changeNumOfChar(100)" class="p-2 m-3 border-white border-2 border-solid rounded">100</button>
+                  <h1>{{ wordCount }} / {{ num }}</h1>
                   <br>
-                  <span v-for="(item,index) in word" :key="index" style="padding: 0 0.5px"
-                        :class=" isCorrect(word, letter, index)? 'text-white' : index > countIndex - 1? 'text-light_gray opacity-50' : 'text-red' "><span
-                      :class="countIndex === index? '' : 'hidden' " class="blink_me"
+                  <span v-for="(item,index) in word" :key="index"
+                        :class="check[index].status?'text-white':index > count-1 ?'text-white opacity-50':'text-red'"><span
+                      :class="count === index? '' : 'hidden' " class="blink_me"
                       style="border-right: 1px solid;"></span>{{
                       item
                     }}</span>
-                  <!--<p>{{ time }}</p>-->
-                  <!--                <p>{{ letter.join('') }}</p>-->
-                  <!--                <br>-->
-                  <!--                <p> history:  {{ history }}</p>-->
-                  <!--                <br>-->
-                  <!--                <p> history value {{ Object.keys(history)[countIndex] }}</p>-->
-                  <!--                <br>-->
-                  <!--                <p> {{ spiltWord }}</p>-->
-                  <!--                <br>-->
-                  <!--                <p> countIndex: {{ countIndex }}</p>-->
-                  <!--                <br>-->
-
                 </div>
               </div>
             </div>
-            <div></div>
           </div>
           <div class="flex justify-center">
-            <button @click="reScore()"><img :src="restart" alt="restart"
+            <button @click="reset"><img :src="restart" alt="restart"
                                             class="w-12 h-auto cursor-pointer p-3 cursor-pointer">
             </button>
           </div>
