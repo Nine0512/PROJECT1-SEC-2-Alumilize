@@ -53,13 +53,13 @@ window.addEventListener( 'keydown',  event => {
   
 if( event.key.length === 1){
    history.value.push(event.key)
-   console.log(history.value);
+  //  console.log(history.value);
    index.value++;
    countIndex.value++;
    
 } else if ( event.key === 'Backspace')   {
   history.value.pop()
-  console.log(history.value)
+  // console.log(history.value)
   if(countIndex.value > 0){
     countIndex.value--;
     index.value--;
@@ -67,7 +67,7 @@ if( event.key.length === 1){
 } 
 
 if( index.value === words.join(' ').length ){
-    console.log('next word');
+    // console.log('next word');
     index.value = 0;
     countIndex.value = 0;
     history.value = []
@@ -79,8 +79,8 @@ if( index.value === words.join(' ').length ){
 
 </script>
   <template>
-    <div class=" flex flex-col w-full h-screen bg-black">
-<div class=" p-20  h-full text-white">
+ <div class="flex w-full h-screen bg-black">
+  <div class="flex-row items-center justify-center h-full text-white">
 
   <span v-for="(item, index) in showWords"  :key="index" :class="correctWord(item, history, index )? 'text-green' :  index>countIndex-1 ? 'text-light_gray-500' : 'text-red'" >{{ item }}</span>
 
