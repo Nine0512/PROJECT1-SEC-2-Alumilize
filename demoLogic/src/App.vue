@@ -81,17 +81,20 @@ let interval = setInterval(() => {
 </script>
 
 <template>
-  <div class="bg-black w-screen h-screen space-x-5 ">
+  <div class="bg-black w-screen h-screen space-x-5 pt-56">
     <div class="justify-center flex w-full">
-      <div class="font-bold pt-56">
       <span class="text-white justify-center">{{ timer }}</span><br>
+    </div>
+    <div class="justify-center flex w-full">
+      <div class="font-bold ">
       <span v-for="(item, index) in showWords" :key="index"
             :class="correctWord(item, history, index )? 'text-green-600' :  index>countIndex-1 ? 'text-gray-400' : 'text-red-800'">{{
           item
         }}</span>
+       
       </div>
     </div>
-    <div class="justify-center flex">
+    <div class="place-content-center flex">
       <button @click="useWord(num)" class="bg-black hover:bg-dark_brown text-white font-bold py-2 px-4 rounded">Get Random
         Word
       </button>
