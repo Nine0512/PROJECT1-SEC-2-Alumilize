@@ -1,13 +1,12 @@
 <script setup>
 import { ref } from 'vue';
 
+// non
 
 let allWords = []
 let words = []
 let showWords = ref('')
-let num = 20
-let index = ref(0)
-let countIndex = ref(0)
+let num = 1
 
 async function getRandomWord() {
   const response = await fetch("https://random-word-api.herokuapp.com/word?number=1000");
@@ -33,38 +32,57 @@ function useWord(num){
     showWords.value = words.join(' ')
 }
 
-// benz
-window.addEventListener( 'keydown',  event => {
-if( event.key === words.join(' ').charAt( index.value ) ){
-    console.log('correct');
-    index.value++;
-   
-} else  {
-    console.log('wrong');
-   
-} 
-countIndex.value++;
-if( words.length === index.value ){
-    console.log('end');
+// check word
+
+let typeKey = ref([])
+let countType = ref(0)
+
+function checkWord(event){
+  if(event.key.length === 1 && !(typeKey.value.length===showWords.value.length)){
+     typeKey.value.push(event.key)
+     countType.value++
+  }
+  if(event.key === 'Backspace' && countType.value > 0){
+    typeKey.value.pop()
+    countType.value--
+  }
 }
-})
+
+function correctWord(word,input,index){
+ return word === input[index]
+}
+
+window.document.addEventListener('keydown', checkWord)
+
+
+
 
 
 </script>
-  <template>
-<div>
-    <button @click="useWord(num)" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Get Random Word</button>
+
+
+
+<template>
+    <div class="w-full h-screen bg-black">
+  <div class="flex flex-col items-center justify-center h-full">
+
+
+
+<div class="text-white">
+  <span v-for="(e,i) in showWords" :key="i" :class="correctWord(e,typeKey,i) ? 'text-green' : countType-1 < i ? 'text-gray-500' : 'text-red' "> {{ e }}</span>
+</div> 
+
+
+
+
+  <button @click="useWord(num)" class="bg-black hover:bg-dark_brown text-white font-bold py-2 px-4 rounded">Get Random Word</button>
   <div>
-  <p>{{ showWords }}</p>
+  <p class="text-white">countType : {{  countType }}</p>
   </div>
 
-  <div>
-  <p>index : {{  index }}</p>
-  </div>
-
-  <p>countIndex : {{ countIndex }}</p>
 </div>
-  </template>
+</div>
+</template>
  
 <style scoped>
 
