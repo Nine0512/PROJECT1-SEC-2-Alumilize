@@ -7,6 +7,7 @@ let showWords = ref('')
 let num = 10
 let index = ref(0)
 let countIndex = ref(0)
+let timer = ref(30)
 
 async function getRandomWord() {
   const response = await fetch("https://random-word-api.herokuapp.com/word?number=1000");
@@ -67,7 +68,16 @@ window.addEventListener('keydown', event => {
         useWord(num)
       }
     })
-
+//win จับเวลา
+let interval = setInterval(() => {
+  if (timer.value === 0) {
+    clearInterval(interval)
+    window.removeEventListener('keydown',func)                
+  } else {
+    timer.value--
+    console.log(timer)
+  }         
+}, 1000)
 </script>
 
 <template>
@@ -78,6 +88,7 @@ window.addEventListener('keydown', event => {
             :class="correctWord(item, history, index )? 'text-green-600' :  index>countIndex-1 ? 'text-gray-400' : 'text-red-800'">{{
           item
         }}</span>
+       <span>{{ timer }}</span>
       </div>
     </div>
     <div class="justify-center flex">
