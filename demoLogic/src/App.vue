@@ -43,10 +43,13 @@ let endTime = ref(0)
 let time
 let wpm
 
+let interval
+
 let reset = () => {
   history.value.length = 0
   index.value = 0;
   countIndex.value = 0;
+  timer.value = 30
   useWord(num)
 }
 
@@ -65,6 +68,18 @@ let correctWord = (word, input, index) => {
 }
 let func = event => {
 
+  if (history.value.length === 1) {
+    interval = setInterval(() => {
+      if (timer.value === 0) {
+        clearInterval(interval)
+        window.removeEventListener('keydown', func)
+      } else {
+        timer.value--
+        console.log(timer)
+      }
+    }, 1000)
+  }
+
   if (event.key.length === 1) {
     history.value.push(event.key)
     //  console.log(history.value);
@@ -73,7 +88,6 @@ let func = event => {
     if (countIndex.value === 1) {
       startTime = new Date()
     }
-
   } else if (event.key === 'Backspace') {
     history.value.pop()
     // console.log(history.value)
@@ -90,19 +104,17 @@ let func = event => {
     reset()
   }
 
+  if (timer.value === 0) {
+    endTime = new Date()
+    time = ref((endTime - startTime) / 1000)
+    wpm = ref(Math.floor((words.join(' ').length / 5) / (time.value / 60)))
+  }
+
 }
+
 window.addEventListener('keydown', func)
 
 // win จับเวลา
-let interval = setInterval(() => {
-  if (timer.value === 0) {
-    clearInterval(interval)
-    window.removeEventListener('keydown',func)
-  } else {
-    timer.value--
-    console.log(timer)
-  }
-}, 1000)
 
 
 </script>
@@ -110,7 +122,7 @@ let interval = setInterval(() => {
 <template>
   <div class="bg-black w-screen h-screen space-x-5 pt-56">
     <div class="justify-center flex w-full">
-            <span class="text-white justify-center">{{ timer }}</span><br>
+      <span class="text-white justify-center">{{ timer }}</span><br>
     </div>
     <div class="justify-center flex w-full">
       <div class="font-bold ">
