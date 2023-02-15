@@ -4,10 +4,11 @@ import {ref} from 'vue';
 let allWords = []
 let words = []
 let showWords = ref('')
-let num = 10
+let num = 3
 let index = ref(0)
 let countIndex = ref(0)
 let timer = ref(30)
+let refTime = 30
 
 async function getRandomWord() {
 
@@ -42,16 +43,38 @@ let startTime = ref(0)
 let endTime = ref(0)
 let time
 let wpm
+let wordCount = [10, 25, 50]
+let timeArr = [30, 60, 90]
 
-let interval
+let changeNum = (number) => {
+  num = number
+  reset()
+}
+
+let changeTime = (time) => {
+  timer.value = time
+  refTime = time
+  reset()
+}
+
+let calculateTime = () => {
+  clearInterval(interval)
+  endTime = new Date()
+  time = ref((endTime - startTime) / 1000)
+  wpm = ref(Math.floor((words.join(' ').length / 5) / (time.value / 60)))
+}
 
 let reset = () => {
   history.value.length = 0
   index.value = 0;
   countIndex.value = 0;
-  timer.value = 30
+  timer.value = refTime
   useWord(num)
+  window.addEventListener('keydown', func)
 }
+
+let interval
+
 
 // benz
 
@@ -72,6 +95,7 @@ let func = event => {
     interval = setInterval(() => {
       if (timer.value === 0) {
         clearInterval(interval)
+        calculateTime()
         window.removeEventListener('keydown', func)
       } else {
         timer.value--
@@ -97,17 +121,7 @@ let func = event => {
     }
   }
   if (index.value === words.join(' ').length) {
-    // console.log('next word');
-    endTime = new Date()
-    time = ref((endTime - startTime) / 1000)
-    wpm = ref(Math.floor((words.join(' ').length / 5) / (time.value / 60)))
-    reset()
-  }
-
-  if (timer.value === 0) {
-    endTime = new Date()
-    time = ref((endTime - startTime) / 1000)
-    wpm = ref(Math.floor((words.join(' ').length / 5) / (time.value / 60)))
+    calculateTime()
   }
 
 }
@@ -125,7 +139,7 @@ window.addEventListener('keydown', func)
       <span class="text-white justify-center">{{ timer }}</span><br>
     </div>
     <div class="justify-center flex w-full">
-      <div class="font-bold ">
+      <div class="font-bold">
       <span v-for="(item, index) in showWords" :key="index"
             :class="correctWord(item, history, index )? 'text-green-600' :  index>countIndex-1 ? 'text-gray-400' : 'text-red-800'">{{
           item
@@ -142,6 +156,24 @@ window.addEventListener('keydown', func)
         Random
         Word
       </button>
+    </div>
+    <div class="flex justify-center text-white">
+      <h1>word</h1>
+      <div class="border-solid border-2 flex m-3">
+        <div v-for="(item,index) in wordCount" :key="index">
+          <button @click="changeNum(item)"
+                  class="bg-black hover:bg-dark_brown font-bold py-2 px-4 rounded border-solid border-2 m-3">{{ item }}
+          </button>
+        </div>
+      </div>
+      <h1>time</h1>
+      <div class="border-solid border-2 flex m-3">
+        <div v-for="(item,index) in timeArr" :key="index">
+          <button @click="changeTime(item)"
+                  class="bg-black hover:bg-dark_brown font-bold py-2 px-4 rounded border-solid border-2 m-3">{{ item }}
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
