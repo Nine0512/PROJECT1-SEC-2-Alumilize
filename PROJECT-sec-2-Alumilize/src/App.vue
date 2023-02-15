@@ -12,7 +12,7 @@ import restart from './assets/restart-svgrepo-com.svg'
 
 let showModal = ref(false)
 let showPlay = ref(false)
-let showScores = ref(false)
+let timer = ref(0)
 
 function toggleModal() {
   this.showModal = !this.showModal;
@@ -25,6 +25,14 @@ function togglePlay() {
 function toggleScores() {
   this.showScores = !this.showScores;
 }
+
+let interval = setInterval(() => {
+  if (timer.value === 0) {
+    clearInterval(interval)
+  } else {
+    timer.value--
+  }
+}, 1000)
 
 // logic
 
@@ -71,7 +79,7 @@ const reScore = () => {
   countIndex = 0
   history.value = {}
   word = []
-  for (let i = 0; i < 1; i++) {
+  for (let i = 0; i < 20; i++) {
     let ranWord = wordArr[Math.floor(Math.random() * wordArr.length)]
     if (word.every(e => e !== ranWord)) {
       word.push(ranWord)
@@ -246,6 +254,7 @@ window.addEventListener('keydown', (event) => {
                 <div class="w-full m-5 text-light_gray text-2xl">
                   <h2><b>score: </b> {{ score }}/{{ spiltWord.length }} {{ score === spiltWord.length ? 'finish' : '' }}
                   </h2>
+                  <h2>time: {{ timer }}</h2>
                   <br>
                   <span v-for="(item,index) in word" :key="index" style="padding: 0 0.5px"
                         :class=" isCorrect(word, letter, index)? 'text-white' : index > countIndex - 1? 'text-light_gray opacity-50' : 'text-red' "><span
