@@ -10,12 +10,14 @@ let countIndex = ref(0)
 let timer = ref(30)
 
 async function getRandomWord() {
+
   const response = await fetch("https://random-word-api.herokuapp.com/word?number=1000");
   const data = await response.json();
   return data;
 }
 
 async function getAndLogRandomWords() {
+
   const word = await getRandomWord()
   allWords = word
   useWord(num)
@@ -24,6 +26,7 @@ async function getAndLogRandomWords() {
 getAndLogRandomWords()
 
 function useWord(num) {
+
   words.length = 0
   for (let i = 0; i < num; i++) {
     let ranWord = allWords[Math.floor(Math.random() * allWords.length)]
@@ -40,8 +43,17 @@ let endTime = ref(0)
 let time
 let wpm
 
+let reset = () => {
+  history.value.length = 0
+  index.value = 0;
+  countIndex.value = 0;
+  useWord(num)
+}
+
 // benz
+
 let history = ref([])
+
 //เช็คถูกผิด
 let correctWord = (word, input, index) => {
   if (word === input[index]) {
@@ -53,33 +65,30 @@ let correctWord = (word, input, index) => {
 }
 let func = event => {
 
-if (event.key.length === 1) {
-  history.value.push(event.key)
-  //  console.log(history.value);
-  index.value++;
-  countIndex.value++;
-  if (countIndex.value === 1){
-    startTime = new Date()
-  }
+  if (event.key.length === 1) {
+    history.value.push(event.key)
+    //  console.log(history.value);
+    index.value++;
+    countIndex.value++;
+    if (countIndex.value === 1) {
+      startTime = new Date()
+    }
 
-} else if (event.key === 'Backspace') {
-  history.value.pop()
-  // console.log(history.value)
-  if (countIndex.value > 0) {
-    countIndex.value--;
-    index.value--;
+  } else if (event.key === 'Backspace') {
+    history.value.pop()
+    // console.log(history.value)
+    if (countIndex.value > 0) {
+      countIndex.value--;
+      index.value--;
+    }
   }
-}
-if (index.value === words.join(' ').length) {
-  // console.log('next word');
-  index.value = 0;
-  countIndex.value = 0;
-  history.value = []
-  endTime = new Date()
-  time = ref((endTime - startTime) / 1000)
-  wpm = ref(Math.floor((words.join(' ').length / 5) / (time.value / 60)))
-  useWord(num)
-}
+  if (index.value === words.join(' ').length) {
+    // console.log('next word');
+    endTime = new Date()
+    time = ref((endTime - startTime) / 1000)
+    wpm = ref(Math.floor((words.join(' ').length / 5) / (time.value / 60)))
+    reset()
+  }
 
 }
 window.addEventListener('keydown', func)
@@ -101,7 +110,7 @@ let interval = setInterval(() => {
 <template>
   <div class="bg-black w-screen h-screen space-x-5 pt-56">
     <div class="justify-center flex w-full">
-      <span class="text-white justify-center">{{ timer }}</span><br>
+            <span class="text-white justify-center">{{ timer }}</span><br>
     </div>
     <div class="justify-center flex w-full">
       <div class="font-bold ">
@@ -109,7 +118,7 @@ let interval = setInterval(() => {
             :class="correctWord(item, history, index )? 'text-green-600' :  index>countIndex-1 ? 'text-gray-400' : 'text-red-800'">{{
           item
         }}</span>
-       
+
       </div>
     </div>
     <div class="place-content-center flex">
@@ -117,7 +126,8 @@ let interval = setInterval(() => {
         <h1>Time : {{ time }}</h1>
         <h1>WPM : {{ wpm }}</h1>
       </div>
-      <button @click="useWord(num)" class="bg-black hover:bg-dark_brown text-white font-bold py-2 px-4 rounded">Get Random
+      <button @click="reset" class="bg-black hover:bg-dark_brown text-white font-bold py-2 px-4 rounded">Get
+        Random
         Word
       </button>
     </div>
