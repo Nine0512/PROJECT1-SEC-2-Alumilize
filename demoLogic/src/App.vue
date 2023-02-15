@@ -122,6 +122,8 @@ let func = event => {
   }
   if (index.value === words.join(' ').length) {
     calculateTime()
+    clearInterval(interval)
+    window.removeEventListener('keydown', func)
   }
 
 }
