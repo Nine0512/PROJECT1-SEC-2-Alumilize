@@ -25,11 +25,12 @@ let startTime = 0
 let endTime = 0
 let time = ref(0)
 let wpm = ref(0)
-let num = ref(2)
+let num = ref(10)
 let countWrong = 0
-let precision = ref(0)
+let accuracy = ref(0)
 let timeArr = [15, 30, 60, 120]
 let wordArr = [10, 25, 50, 100]
+let interval
 
 
 let toggleModal = () => {
@@ -68,6 +69,7 @@ let reset = () => {
   wordCount.value = 0
   timer.value = refTime
   countWrong = 0
+  clearInterval(interval)
   if (gameMode.value) {
     randomWord(100)
   } else {
@@ -123,10 +125,9 @@ window.addEventListener('keydown', (e) => {
       count.value++
       if (count.value === 1) {
         if (gameMode.value) {
-          let interval = setInterval(() => {
+          interval = setInterval(() => {
             if (timer.value === 0) {
               clearInterval(interval)
-              status = false
             } else {
               timer.value--
             }
@@ -139,22 +140,19 @@ window.addEventListener('keydown', (e) => {
     if (e.key === 'Backspace' && count.value > 0 && check[count.value - 1].status === false) {
       count.value--
     }
-    if (gameMode.value) {
-      if (timer.value === 0) {
-        wpm.value = Math.floor((count.value / 5) / (refTime / 60))
-        precision.value = Math.floor(((count.value - countWrong) / count.value) * 100)
-        status = false
-      }
-    } else {
-      if (check.every((item) => item.status === true)) {
-        endTime = new Date()
-        time.value = (endTime - startTime) / 1000
-        wpm.value = Math.floor((count.value / 5) / (refTime / 60))
-        precision.value = Math.floor(((count.value - countWrong) / count.value) * 100)
-        wordCount.value = num.value
-        status = false
-      }
+    if (timer.value === 0) {
+      wpm.value = Math.floor((count.value / 5) / (refTime / 60))
+      accuracy.value = Math.floor(((count.value - countWrong) / count.value) * 100)
+      status = false
     }
+    if (check.every((item) => item.status === true)) {
+      endTime = new Date()
+      time.value = (endTime - startTime) / 1000
+      wpm.value = Math.floor((word.value.length / 5) / (time.value / 60))
+      accuracy.value = Math.floor(((word.value.length - countWrong) / word.value.length) * 100)
+      status = false
+    }
+
   }
 })
 
@@ -248,23 +246,24 @@ window.addEventListener('keydown', (e) => {
             <img :src="user" alt="user" class="w-12 h-auto p-3">
           </div>
 
-          <div class="bg-dark_gray opacity-50 rounded grid col-span-2 w-3/6 justify-self-center">
+          <div
+              class="bg-soft_brown opacity-80 rounded grid col-span-2 w-3/6 justify-self-center text-dark_brown font-bold">
             <div class="grid grid-cols-2 place-content-center pl-2">
               <div class="cursor-pointer flex">
-                <h1 class="p-2 cursor-pointer text-white hover:opacity-100"
-                    :class="!gameMode?'opacity-100':'opacity-50'" @click="changeMode(false)">word</h1>
-                <h1 class="p-2 cursor-pointer text-white hover:opacity-100" :class="gameMode?'opacity-100':'opacity-50'"
+                <h1 class="p-2 cursor-pointer hover:opacity-100"
+                    :class="!gameMode?'opacity-100':'opacity-60'" @click="changeMode(false)">word</h1>
+                <h1 class="p-2 cursor-pointer hover:opacity-100" :class="gameMode?'opacity-100':'opacity-60'"
                     @click="changeMode(true)">time</h1>
               </div>
-              <div v-if="gameMode" class="flex justify-end pr-2 text-white">
+              <div v-if="gameMode" class="flex justify-end pr-2">
                 <div v-for="(item,index) in timeArr" :key="index">
                   <div @click="changeTime(item)"
                        class="p-2 cursor-pointer flex hover:opacity-100"
-                       :class="refTime === item?'opacity-100':'opacity-50'">{{ item }}
+                       :class="refTime === item?'opacity-100':'opacity-60'">{{ item }}
                   </div>
                 </div>
               </div>
-              <div v-else class="flex justify-end pr-2 text-white">
+              <div v-else class="flex justify-end pr-2">
                 <div v-for="(item,index) in wordArr" :key="index">
                   <div @click="changeNum(item)"
                        class="p-2 cursor-pointer flex hover:opacity-100"
@@ -306,16 +305,17 @@ window.addEventListener('keydown', (e) => {
 
       <div v-if="!status"
            class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 justify-center items-center flex max-sm:m-10 max-lg:m-5">
-        <div class="relative my-6 mx-auto max-w-4xl p-5 rounded-lg shadow-lg flex flex-col w-full bg-black border border-white">
-          <div class="justify-self-center">
-            <div class="w-4/5 p-10 m-5 text-light_gray text-2xl max-w-7xl">
+        <div
+            class="relative my-6 mx-auto max-w-4xl p-5 rounded-lg shadow-lg flex flex-col w-full bg-black border border-white">
+          <div class="grid grid-cols-2 text-light_gray">
+            <div class="w-4/5 p-10 m-5 text-2xl max-w-7xl">
               <div>
                 <h1 class="opacity-50">wpm</h1>
                 <h1 class="text-6xl">{{ wpm }}</h1>
               </div>
               <div class="mt-5">
-                <h1 class="opacity-50">precision</h1>
-                <h1 class="text-6xl">{{ precision }}%</h1>
+                <h1 class="opacity-50">accuracy</h1>
+                <h1 class="text-6xl">{{ accuracy }}%</h1>
               </div>
               <div class="mt-5">
                 <h1 class="opacity-50">time</h1>
@@ -323,10 +323,31 @@ window.addEventListener('keydown', (e) => {
                 <h1 v-else class="text-6xl">{{ time }}</h1>
               </div>
             </div>
-            <div @click="reset" class="mt-5 flex justify-center">
-              <img :src="restart" alt="restart"
-                   class="w-12 h-auto cursor-pointer p-3 cursor-pointer">
+            <div class="justify-self-center">
+              <div v-if="wpm<=29">
+                <img src="https://media.tenor.com/zcax6e0DLyEAAAAS/ummm.gif" alt="Turtle" class="w-72 h-auto pt-5">
+                <!-- ref : https://tenor.com/view/ummm-gif-25800187 -->
+                <h1 class="text-3xl font-bold pt-5">You're a Turtle.</h1>
+                <h1 class="pt-5">Very slow typing.</h1>
+              </div>
+              <div v-else-if="wpm>=30 && wpm <= 49">
+                <img src="https://media.tenor.com/WC3Hil6PFD8AAAAM/capybara-riding.gif" alt="Capybara"
+                     class="w-72 h-auto pt-5">
+                <!-- ref : https://tenor.com/view/capybara-riding-alligator-capybara-riding-a-crocodile-gif-27496961 -->
+                <h1 class="text-3xl font-bold pt-5">Normal!!</h1>
+                <h1 class="pt-5">Not good and not bad.</h1>
+              </div>
+              <div v-else-if="wpm>50">
+                <img src="https://i.pinimg.com/originals/7b/65/19/7b6519089cc27135155459ece52f51f4.gif"
+                     alt="Anime running" class="w-72 h-auto pt-5">
+                <h1 class="text-3xl font-bold pt-5">Very fast!!!!!</h1>
+                <h1 class="pt-5">Very fast typing. Really awesome!!</h1>
+              </div>
             </div>
+          </div>
+          <div @click="reset" class="mt-5 flex justify-center">
+            <img :src="restart" alt="restart"
+                 class="w-12 h-auto cursor-pointer p-3 cursor-pointer">
           </div>
         </div>
       </div>
