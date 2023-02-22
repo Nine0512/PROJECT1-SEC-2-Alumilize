@@ -110,6 +110,10 @@ let reset = () => {
   status.value = true
   countCorrect = 0
   countWrong = 0
+  accuracy.value = 0
+  wpm.value = 0
+  objectCorrect = {}
+  objectWrong = {}
   clearInterval(interval)
   useWord(num)
   window.addEventListener('keydown', func)
