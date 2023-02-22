@@ -45,7 +45,7 @@ Game mode
 - Word API from [Random Word API](https://random-word-api.herokuapp.com/home)
 
 ## Prototype TestType
-https://prototype-alumilize.netlify.app/
+https://alumilize-typing.vercel.app/
 
 ## Member
 
