@@ -1,14 +1,53 @@
 <script setup>
+
 import {ref} from 'vue';
-// non
+
+const logo = 'images/HomeLogo.svg'
+const questionMark = 'images/questionMark.svg'
+const howToPlay = 'images/HowToPlay.svg'
+const colorPalette = 'images/color-palette-svgrepo-com.svg'
+const crown = 'images/crown-svgrepo-com.svg'
+const home = 'images/home-3-svgrepo-com.svg'
+const user = 'images/user-square-svgrepo-com.svg'
+const restart = 'images/restart-svgrepo-com.svg'
+
 let allWords = []
 let words = []
 let showWords = ref('')
 let num = 3
 let index = ref(0)
 let countIndex = ref(0)
+let countCorrect = 0
+let countWrong = 0
+let accuracy = ref(0)
 let timer = ref(30)
 let refTime = 30
+let startTime = ref(0)
+let endTime = ref(0)
+let time = ref(0)
+let wpm = ref(0)
+let interval
+let history = ref([])
+let timeArr = [15, 30, 60, 120]
+let wordArr = [10, 25, 50, 100]
+let showModal = ref(false)
+let showPlay = ref(false)
+let gameMode = ref(true)
+let status = ref(true)
+
+
+let toggleModal = () => {
+  showModal.value = !showModal.value;
+}
+
+let togglePlay = () => {
+  showPlay.value = !showPlay.value;
+}
+
+let changeMode = (mode) => {
+  gameMode.value = mode
+  reset()
+}
 
 async function getRandomWord() {
 
@@ -34,17 +73,7 @@ function useWord(num) {
     words.push(ranWord)
   }
   showWords.value = words.join(' ')
-  console.log(showWords.value)
 }
-
-// nine
-
-let startTime = ref(0)
-let endTime = ref(0)
-let time
-let wpm
-let wordCount = [10, 25, 50]
-let timeArr = [30, 60, 90]
 
 let changeNum = (number) => {
   num = number
@@ -58,10 +87,15 @@ let changeTime = (time) => {
 }
 
 let calculateTime = () => {
-  clearInterval(interval)
-  endTime = new Date()
-  time = ref((endTime - startTime) / 1000)
-  wpm = ref(Math.floor((words.join(' ').length / 5) / (time.value / 60)))
+  accuracy.value = Math.floor((countIndex.value - countWrong / countIndex.value) * 100)
+  if (gameMode.value) {
+    wpm.value = Math.floor((countCorrect / 5) / (refTime / 60))
+  } else {
+    endTime = new Date()
+    time.value = (endTime - startTime) / 1000
+    wpm.value = Math.floor((countCorrect / 5) / (time.value / 60))
+  }
+  status.value = false
 }
 
 let reset = () => {
@@ -69,29 +103,20 @@ let reset = () => {
   index.value = 0;
   countIndex.value = 0;
   timer.value = refTime
+  status.value = true
+  countCorrect = 0
+  countWrong = 0
+  clearInterval(interval)
   useWord(num)
   window.addEventListener('keydown', func)
 }
 
-let interval
-
-
-// benz
-
-let history = ref([])
-
-//เช็คถูกผิด
 let correctWord = (word, input, index) => {
-  if (word === input[index]) {
-    console.log('true');
-    return true;
-  }
-  console.log('false');
-  return false;
+  return word === input[index];
 }
 let func = event => {
 
-  if (history.value.length === 1) {
+  if (history.value.length === 1 && gameMode.value) {
     interval = setInterval(() => {
       if (timer.value === 0) {
         clearInterval(interval)
@@ -99,14 +124,12 @@ let func = event => {
         window.removeEventListener('keydown', func)
       } else {
         timer.value--
-        console.log(timer)
       }
     }, 1000)
   }
 
   if (event.key.length === 1) {
     history.value.push(event.key)
-    //  console.log(history.value);
     index.value++;
     countIndex.value++;
     if (countIndex.value === 1) {
@@ -114,7 +137,6 @@ let func = event => {
     }
   } else if (event.key === 'Backspace') {
     history.value.pop()
-    // console.log(history.value)
     if (countIndex.value > 0) {
       countIndex.value--;
       index.value--;
@@ -122,7 +144,6 @@ let func = event => {
   }
   if (index.value === words.join(' ').length) {
     calculateTime()
-    clearInterval(interval)
     window.removeEventListener('keydown', func)
   }
 
@@ -130,54 +151,202 @@ let func = event => {
 
 window.addEventListener('keydown', func)
 
-// win จับเวลา
-
-
 </script>
 
 <template>
-  <div class="bg-black w-screen h-screen space-x-5 pt-56">
-    <div class="justify-center flex w-full">
-      <span class="text-white justify-center">{{ timer }}</span><br>
-    </div>
-    <div class="justify-center flex w-full">
-      <div class="font-bold">
-      <span v-for="(item, index) in showWords" :key="index"
-            :class="correctWord(item, history, index )? 'text-green-600' :  index>countIndex-1 ? 'text-gray-400' : 'text-red-800'">{{
-          item
-        }}</span>
 
+  <div class="w-screen min-h-screen bg-[#0A0A0A]">
+
+    <!-- home page -->
+    <div class="grid grid-rows-2 p-12" v-if="!showPlay">
+      <div class="grid grid-cols-4 gap-4 self-center max-sm:grid-cols-2 ">
+        <div class="max-sm:hidden"></div>
+        <div class="w-full h-full col-span-2 mt-20 mb-10">
+          <div class="w-full">
+            <img :src="logo" alt="logo" class="w-full h-auto">
+          </div>
+        </div>
+        <div></div>
       </div>
-    </div>
-    <div class="place-content-center flex">
-      <div class="text-white">
-        <h1>Time : {{ time }}</h1>
-        <h1>WPM : {{ wpm }}</h1>
-      </div>
-      <button @click="reset" class="bg-black hover:bg-dark_brown text-white font-bold py-2 px-4 rounded">Get
-        Random
-        Word
-      </button>
-    </div>
-    <div class="flex justify-center text-white">
-      <h1>word</h1>
-      <div class="border-solid border-2 flex m-3">
-        <div v-for="(item,index) in wordCount" :key="index">
-          <button @click="changeNum(item)"
-                  class="bg-black hover:bg-dark_brown font-bold py-2 px-4 rounded border-solid border-2 m-3">{{ item }}
+      <div class="grid grid-cols-3 gap-4 p-5 h-1/2 place-content-center">
+        <div></div>
+        <div class="items-center justify-self-center">
+          <div class="w-full flex items-center justify-center cursor-pointer" v-on:click="toggleModal()">
+            <img :src="questionMark" alt="questionMark" class="w-4">
+            <h1 class="text-white text-center text-[#F1DDC9] font-bold p-3">HOW
+              TO PLAY</h1>
+          </div>
+          <button
+              class="bg-[#F1DDC9] text-[#B76E22] font-bold py-2 px-4 rounded-full w-48 p-3 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300"
+              v-on:click="togglePlay()">
+            PLAY
           </button>
         </div>
+        <div class="max-sm:hidden"></div>
       </div>
-      <h1>time</h1>
-      <div class="border-solid border-2 flex m-3">
-        <div v-for="(item,index) in timeArr" :key="index">
-          <button @click="changeTime(item)"
-                  class="bg-black hover:bg-dark_brown font-bold py-2 px-4 rounded border-solid border-2 m-3">{{ item }}
-          </button>
+    </div>
+
+    <!-- pop up-->
+    <div v-if="showModal"
+         class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 justify-center items-center flex max-sm:m-10 max-lg:m-5">
+      <div
+          class="relative my-6 mx-auto max-w-4xl rounded-lg shadow-lg flex flex-col w-full bg-[#000] border border-[#fff]">
+
+        <div class="flex flex-row">
+          <div class="basis-1/2 p-3">
+            <div class="w-6 h-6 bg-[#D9D9D9] border-solid rounded-full"></div>
+          </div>
+          <div class="flex items-center justify-end p-3 border-t border-solid rounded-b basis-1/2">
+            <button class="w-6 h-6 text-center rounded bg-[#D9D9D9] text-black font-bold m-0" type="button"
+                    v-on:click="toggleModal()">X
+            </button>
+          </div>
+        </div>
+        <div class="grid grid-cols-4 max-sm:grid-cols-1 max-sm:place-items-center">
+          <div class="max-sm:hidden"></div>
+          <div class="p-3 flex-auto text-center col-span-2 max-sm:col-span-1 max-sm:p-12">
+            <img src="https://media.tenor.com/cBmz8RTK_JsAAAAC/typing-anime.gif" alt="typing" class="max-sm:w-full">
+            <!-- source "https://tenor.com/view/typing-anime-working-keyboard-gif-12614494" -->
+            <img :src="howToPlay" alt="How to play" class="w-full h-auto max-sm:w-full">
+            <p class="my-4 text-lg leading-relaxed text-left text-white max-sm:text-sm">
+              Press the buttons according to the characters displayed on the screen. Then the letters that you have
+              already typed will be displayed in white. If we make a mistake, the letters will be displayed in red.
+            </p>
+          </div>
+          <div class="max-sm:hidden"></div>
+        </div>
+        <div class="flex flex-row">
+          <div class="basis-1/2 p-3">
+            <div class="w-6 h-6 bg-[#D9D9D9] border-solid rounded-full"></div>
+          </div>
+          <div class="flex justify-end p-3 basis-1/2">
+            <div class="w-6 h-6 bg-[#D9D9D9] border-solid rounded-full"></div>
+          </div>
         </div>
       </div>
     </div>
+
+    <div v-if="showPlay">
+
+      <div class="grid grid-cols-1">
+        <!-- head -->
+        <div class="grid grid-cols-2 p-10">
+          <div class="flex">
+            <img :src="logo" alt="logo" class="w-1/4 h-auto cursor-pointer p-3" v-on:click="togglePlay()">
+            <img :src="home" alt="home" class="w-12 h-auto cursor-pointer p-3" v-on:click="togglePlay()">
+            <img :src="crown" alt="crown" class="w-12 h-auto p-3">
+          </div>
+          <div class="flex justify-end">
+            <img :src="colorPalette" alt="colorPalette" class="w-12 h-auto p-3">
+            <img :src="user" alt="user" class="w-12 h-auto p-3">
+          </div>
+
+          <div
+              class="bg-[#F1DDC9] opacity-80 rounded grid col-span-2 w-3/6 justify-self-center text-[#B76E22] font-bold">
+            <div class="grid grid-cols-2 place-content-center pl-2">
+              <div class="cursor-pointer flex">
+                <h1 class="p-2 cursor-pointer hover:opacity-100"
+                    :class="!gameMode?'opacity-100':'opacity-60'" @click="changeMode(false)">word</h1>
+                <h1 class="p-2 cursor-pointer hover:opacity-100" :class="gameMode?'opacity-100':'opacity-60'"
+                    @click="changeMode(true)">time</h1>
+              </div>
+              <div v-if="gameMode" class="flex justify-end pr-2">
+                <div v-for="(item,index) in timeArr" :key="index">
+                  <div @click="changeTime(item)"
+                       class="p-2 cursor-pointer flex hover:opacity-100"
+                       :class="refTime === item?'opacity-100':'opacity-60'">{{ item }}
+                  </div>
+                </div>
+              </div>
+              <div v-else class="flex justify-end pr-2">
+                <div v-for="(item,index) in wordArr" :key="index">
+                  <div @click="changeNum(item)"
+                       class="p-2 cursor-pointer flex hover:opacity-100"
+                       :class="num === item?'opacity-100':'opacity-50'">{{ item }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- body -->
+        <div class="h-full grid grid-rows-1">
+          <div class="w-4/5 flex justify-self-center p-10 m-5 text-[#fff] text-2xl">
+            <div class="w-full h-full">
+              <h1 v-if="gameMode">{{ timer }}</h1>
+              <!--              <h1 v-else>{{ wordCount }} / {{ num }}</h1>-->
+              <br>
+              <span v-for="(item, index) in showWords" :key="index"
+                    :class="correctWord(item, history, index )? 'text-green-600' :  index>countIndex-1 ? 'text-gray-400' : 'text-red-800'">{{
+                  item
+                }}</span>
+            </div>
+          </div>
+          <div @click="reset" class="mt-5 flex justify-center">
+            <img :src="restart" alt="restart"
+                 class="w-12 h-auto cursor-pointer p-3 cursor-pointer">
+          </div>
+        </div>
+
+
+        <!-- footer -->
+
+        <div></div>
+      </div>
+      <div v-if="!status"
+           class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 justify-center items-center flex max-sm:m-10 max-lg:m-5">
+        <div
+            class="relative my-6 mx-auto max-w-4xl p-5 rounded-lg shadow-lg flex flex-col w-full bg-black border border-white">
+          <div class="grid grid-cols-2 text-[#D9D9D9]">
+            <div class="w-4/5 p-10 m-5 text-2xl max-w-7xl">
+              <div>
+                <h1 class="opacity-50">wpm</h1>
+                <h1 class="text-6xl">{{ wpm }}</h1>
+              </div>
+              <div class="mt-5">
+                <h1 class="opacity-50">accuracy</h1>
+                <h1 class="text-6xl">{{ accuracy }}%</h1>
+              </div>
+              <div class="mt-5">
+                <h1 class="opacity-50">time</h1>
+                <h1 v-if="gameMode" class="text-6xl">{{ refTime }}</h1>
+                <h1 v-else class="text-6xl">{{ time }}</h1>
+              </div>
+            </div>
+            <div class="justify-self-center">
+              <div v-if="wpm<=29">
+                <img src="https://media.tenor.com/zcax6e0DLyEAAAAS/ummm.gif" alt="Turtle" class="w-72 h-auto pt-5">
+                <!-- ref : https://tenor.com/view/ummm-gif-25800187 -->
+                <h1 class="text-3xl font-bold pt-5">You're a Turtle.</h1>
+                <h1 class="pt-5">Very slow typing.</h1>
+              </div>
+              <div v-else-if="wpm>=30 && wpm <= 49">
+                <img src="https://media.tenor.com/WC3Hil6PFD8AAAAM/capybara-riding.gif" alt="Capybara"
+                     class="w-72 h-auto pt-5">
+                <!-- ref : https://tenor.com/view/capybara-riding-alligator-capybara-riding-a-crocodile-gif-27496961 -->
+                <h1 class="text-3xl font-bold pt-5">Normal!!</h1>
+                <h1 class="pt-5">Not good and not bad.</h1>
+              </div>
+              <div v-else-if="wpm>50">
+                <img src="https://i.pinimg.com/originals/7b/65/19/7b6519089cc27135155459ece52f51f4.gif"
+                     alt="Anime running" class="w-72 h-auto pt-5">
+                <h1 class="text-3xl font-bold pt-5">Very fast!!!!!</h1>
+                <h1 class="pt-5">Very fast typing. Really awesome!!</h1>
+              </div>
+            </div>
+          </div>
+          <div @click="reset" class="mt-5 flex justify-center">
+            <img :src="restart" alt="restart"
+                 class="w-12 h-auto cursor-pointer p-3 cursor-pointer">
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
+
 </template>
 
 <style scoped>
