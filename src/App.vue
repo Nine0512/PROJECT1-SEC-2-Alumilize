@@ -14,7 +14,6 @@ const restart = 'images/restart-svgrepo-com.svg'
 let allWords = []
 let words = []
 let showWords = ref('')
-let num = 3
 let index = ref(0)
 let countIndex = ref(0)
 let countCorrect = 0
@@ -32,9 +31,9 @@ let timeArr = [15, 30, 60, 120]
 let wordArr = [10, 25, 50, 100]
 let showModal = ref(false)
 let showPlay = ref(false)
-let gameMode = ref(true)
+let gameMode = ref(false)
 let status = ref(true)
-
+let num = wordArr[0]
 
 let toggleModal = () => {
   showModal.value = !showModal.value;
@@ -45,12 +44,14 @@ let togglePlay = () => {
 }
 
 let changeMode = (mode) => {
+  if (mode) {
+    num = 100
+  }
   gameMode.value = mode
   reset()
 }
 
 async function getRandomWord() {
-
   const response = await fetch("https://random-word-api.herokuapp.com/word?number=1000");
   const data = await response.json();
   return data;
@@ -87,7 +88,8 @@ let changeTime = (time) => {
 }
 
 let calculateTime = () => {
-  accuracy.value = Math.floor((countIndex.value - countWrong / countIndex.value) * 100)
+  countCorrect = Object.keys(objectCorrect).length
+  accuracy.value = Math.floor(((countIndex.value - Object.keys(objectWrong).length) / countIndex.value) * 100)
   if (gameMode.value) {
     wpm.value = Math.floor((countCorrect / 5) / (refTime / 60))
   } else {
@@ -112,11 +114,30 @@ let reset = () => {
 }
 
 let correctWord = (word, input, index) => {
-  return word === input[index];
+  if(word === input[index]) {
+    return true
+  } else {
+    return false
+  }
 }
-let func = event => {
 
-  if (history.value.length === 1 && gameMode.value) {
+let objectCorrect = {}
+let objectWrong = {}
+
+let correct = (index) => {
+  objectCorrect[index] = true
+  return 'text-green-600'
+}
+
+let wrong = (index) => {
+  objectWrong[index] = true
+  return 'text-red-800'
+}
+
+
+let func = event => {
+  console.log(Object.keys(objectWrong).length)
+  if (countIndex.value === 1 && gameMode.value) {
     interval = setInterval(() => {
       if (timer.value === 0) {
         clearInterval(interval)
@@ -142,6 +163,7 @@ let func = event => {
       index.value--;
     }
   }
+
   if (index.value === words.join(' ').length) {
     calculateTime()
     window.removeEventListener('keydown', func)
@@ -279,7 +301,7 @@ window.addEventListener('keydown', func)
               <!--              <h1 v-else>{{ wordCount }} / {{ num }}</h1>-->
               <br>
               <span v-for="(item, index) in showWords" :key="index"
-                    :class="correctWord(item, history, index )? 'text-green-600' :  index>countIndex-1 ? 'text-gray-400' : 'text-red-800'">{{
+                    :class="correctWord(item, history, index )? correct(index) :  index>countIndex-1 ? 'text-gray-400' : wrong(index)">{{
                   item
                 }}</span>
             </div>
