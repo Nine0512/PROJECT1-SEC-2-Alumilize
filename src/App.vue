@@ -46,6 +46,8 @@ let togglePlay = () => {
 let changeMode = (mode) => {
   if (mode) {
     num = 100
+  }else {
+    num = wordArr[0]
   }
   gameMode.value = mode
   reset()
@@ -351,7 +353,7 @@ window.addEventListener('keydown', func)
                 <h1 class="text-3xl font-bold pt-5">Normal!!</h1>
                 <h1 class="pt-5">Not good and not bad.</h1>
               </div>
-              <div v-else-if="wpm>50">
+              <div v-else-if="wpm>=50">
                 <img src="https://i.pinimg.com/originals/7b/65/19/7b6519089cc27135155459ece52f51f4.gif"
                      alt="Anime running" class="w-72 h-auto pt-5">
                 <h1 class="text-3xl font-bold pt-5">Very fast!!!!!</h1>
