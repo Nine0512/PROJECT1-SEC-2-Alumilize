@@ -280,7 +280,7 @@ window.addEventListener('keydown', func)
 
         <!-- body -->
         <div class="h-full grid grid-rows-1">
-          <div class="w-4/5 flex flex-col justify-self-center p-10 m-5 text-white text-2xl">
+          <div class="w-4/5 flex flex-col justify-self-center p-10 m-5 text-white text-2xl max-sm:text-base max-sm:w-full">
             <div class="h-3/5">
               <h1 v-if="gameMode">{{ timer }}</h1>
               <!--              <h1 v-else>{{ wordCount }} / {{ num }}</h1>-->
@@ -303,7 +303,7 @@ window.addEventListener('keydown', func)
 
         <!-- footer -->
         <footer class="mb-5">
-          <div class="flex text-white justify-center mt-auto">
+          <div class="flex text-white justify-center mt-auto max-sm:text-xs">
             <a href="https://github.com/Nine0512/PROJECT1-SEC-2-Alumilize" class="opacity-60 hover:opacity-100 pl-5">&lt;/&gt; github</a>
             <p class="opacity-60 hover:opacity-100 pl-5">REF : <a href="https://monkeytype.com/">monkeytype</a></p>
             <p class="opacity-60 hover:opacity-100 pl-5">Word API : <a href="https://random-word-api.herokuapp.com/home">Random Word API</a></p>
