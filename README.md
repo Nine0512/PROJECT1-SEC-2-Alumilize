@@ -16,7 +16,7 @@ This is a web-based typing speed test that allows you to check your typing speed
 
 ## How to play
 <br>
-<img width="100%" src="https://user-images.githubusercontent.com/88127348/220562436-9ed2d936-228c-4382-a821-19f5bb3715b9.mp4">
+<img width="100%" src="https://user-images.githubusercontent.com/88127348/220934408-f9eda327-03a2-4bc4-818a-344d9ca3b7b4.mp4">
 <br>
 
 - Press the buttons according to the characters displayed on the screen.
@@ -25,7 +25,7 @@ This is a web-based typing speed test that allows you to check your typing speed
 - When you finish typing a random word, you get a score of words typed per minute, accuracy, and time spent typing.
 
 <br>
-<img width="100%" src="https://user-images.githubusercontent.com/88127348/220569487-bf6957b4-0c64-4ef8-9936-2dce1c37b220.mp4">
+<img width="100%" src="https://user-images.githubusercontent.com/88127348/220934552-3725a870-e4d5-40b1-8fd2-b4366f8bebde.mp4">
 <br>
 
 Game mode
