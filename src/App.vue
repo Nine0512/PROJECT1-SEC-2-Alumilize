@@ -132,12 +132,12 @@ let objectWrong = {}
 
 let correct = (index) => {
   objectCorrect[index] = true
-  return 'text-green-600'
+  return 'text-white'
 }
 
 let wrong = (index) => {
   objectWrong[index] = true
-  return 'text-red-800'
+  return 'text-red-500'
 }
 
 
@@ -307,7 +307,8 @@ window.addEventListener('keydown', func)
               <!--              <h1 v-else>{{ wordCount }} / {{ num }}</h1>-->
               <br>
               <span v-for="(item, index) in showWords" :key="index"
-                    :class="correctWord(item, history, index )? correct(index) :  index>countIndex-1 ? 'text-gray-400' : wrong(index)">{{
+                    :class="correctWord(item, history, index )? correct(index) :  index>countIndex-1 ? 'text-gray-400' : wrong(index)"><span
+                  :class="countIndex === index? '' : 'hidden' " class="blink_me" style="border-right: 1px solid;"></span>{{
                   item
                 }}</span>
             </div>
@@ -378,5 +379,13 @@ window.addEventListener('keydown', func)
 </template>
 
 <style scoped>
+.blink_me {
+  animation: blinker 1s linear infinite;
+}
 
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
 </style>
