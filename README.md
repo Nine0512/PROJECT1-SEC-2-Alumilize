@@ -48,9 +48,15 @@ Game mode
 https://alumilize-typing.vercel.app/
 
 ## Member
+<h4>Member proportion of work</h4>
 
-- 074 : [Worawit Limthong](https://www.github.com/win2114)
-- 099 : [Natdanai Nitipan](https://www.github.com/c3bosskung)
-- 101 : [Thaninpong Panthawong](https://www.github.com/nonybueno)
-- 102 : [Thanwa Plaengman](https://www.github.com/Nine0512)
-- 106 : [Preeyaporn Petcharat](https://www.github.com/Preeyapornn)
+- 074 : [Worawit Limthong](https://www.github.com/win2114)                                            
+> 20 % CSS, Code(timer function)
+- 099 : [Natdanai Nitipan](https://www.github.com/c3bosskung)                                         
+> 20 % CSS, Code(Coach/Support Team)
+- 101 : [Thaninpong Panthawong](https://www.github.com/nonybueno)                                     
+> 20 % CSS, Code(random word function)
+- 102 : [Thanwa Plaengman](https://www.github.com/Nine0512)                                          
+> 20 % CSS, Code(Score counting function)
+- 106 : [Preeyaporn Petcharat](https://www.github.com/Preeyapornn)                                    
+> 20 % CSS, Code(check word function)
