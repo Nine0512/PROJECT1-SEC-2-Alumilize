@@ -16,8 +16,8 @@ let index = ref(0)
 let countIndex = ref(0)
 let countCorrect = 0
 let accuracy = ref(0)
-let startTime = ref(0)
-let endTime = ref(0)
+let startTime = 0
+let endTime = 0
 let time = ref(0)
 let wpm = ref(0)
 let interval
