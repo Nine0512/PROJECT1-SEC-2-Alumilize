@@ -143,7 +143,8 @@ let wrong = (index) => {
 
 let func = event => {
   console.log(Object.keys(objectWrong).length)
-  if (countIndex.value === 1 && gameMode.value) {
+  if (index.value === 0 && gameMode.value) {
+    console.log('time func')
     interval = setInterval(() => {
       if (timer.value === 0) {
         clearInterval(interval)
@@ -166,11 +167,10 @@ let func = event => {
     history.value.pop()
     if (countIndex.value > 0) {
       countIndex.value--;
-      index.value--;
     }
   }
 
-  if (index.value === words.join(' ').length) {
+  if (countIndex.value === words.join(' ').length) {
     calculateTime()
     window.removeEventListener('keydown', func)
   }
@@ -335,7 +335,7 @@ window.addEventListener('keydown', func)
               </div>
               <div class="mt-5">
                 <h1 class="opacity-50">accuracy</h1>
-                <h1 class="text-6xl">{{ accuracy }}%</h1>
+                <h1 class="text-6xl">{{ accuracy < 0? 0 : accuracy }}%</h1>
               </div>
               <div class="mt-5">
                 <h1 class="opacity-50">time</h1>
