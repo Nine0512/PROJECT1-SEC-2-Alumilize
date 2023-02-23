@@ -1,7 +1,6 @@
 <script setup>
 
 import {ref} from 'vue';
-import {getRandomWord} from "./main.js";
 
 const logo = 'images/HomeLogo.svg'
 const questionMark = 'images/questionMark.svg'
@@ -50,6 +49,13 @@ let changeMode = (mode) => {
   gameMode.value = mode
   reset()
 }
+
+async function getRandomWord() {
+  const response = await fetch("https://random-word-api.herokuapp.com/word?number=1000");
+  const data = await response.json();
+  return data;
+}
+
 
 async function getAndLogRandomWords() {
 
