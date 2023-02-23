@@ -263,7 +263,7 @@ window.addEventListener('keydown', func)
                 <div v-for="(item,index) in timeArr" :key="index">
                   <div @click="changeTime(item)"
                        class="p-2 cursor-pointer flex hover:opacity-100"
-                       :class="refTime === item?'opacity-100':'opacity-60'">{{ item }}
+                       :class="refTime === item?'opacity-100':'opacity-60'">{{ item }}s
                   </div>
                 </div>
               </div>
@@ -331,8 +331,8 @@ window.addEventListener('keydown', func)
               </div>
               <div class="mt-5">
                 <h1 class="opacity-50">time</h1>
-                <h1 v-if="gameMode" class="text-6xl">{{ refTime }}</h1>
-                <h1 v-else class="text-6xl">{{ time }}</h1>
+                <h1 v-if="gameMode" class="text-6xl">{{ refTime }}s</h1>
+                <h1 v-else class="text-6xl">{{ time }}s</h1>
               </div>
             </div>
             <div class="justify-self-center">
