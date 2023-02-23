@@ -6,10 +6,7 @@ import {getRandomWord} from "./main.js";
 const logo = 'images/HomeLogo.svg'
 const questionMark = 'images/questionMark.svg'
 const howToPlay = 'images/HowToPlay.svg'
-const colorPalette = 'images/color-palette-svgrepo-com.svg'
-const crown = 'images/crown-svgrepo-com.svg'
 const home = 'images/home-3-svgrepo-com.svg'
-const user = 'images/user-square-svgrepo-com.svg'
 const restart = 'images/restart-svgrepo-com.svg'
 
 let allWords = []
@@ -18,7 +15,6 @@ let showWords = ref('')
 let index = ref(0)
 let countIndex = ref(0)
 let countCorrect = 0
-let countWrong = 0
 let accuracy = ref(0)
 let timer = ref(30)
 let refTime = 30
@@ -47,7 +43,7 @@ let togglePlay = () => {
 let changeMode = (mode) => {
   if (mode) {
     num = 100
-  }else {
+  } else {
     num = wordArr[0]
   }
   gameMode.value = mode
@@ -104,7 +100,6 @@ let reset = () => {
   timer.value = refTime
   status.value = true
   countCorrect = 0
-  countWrong = 0
   accuracy.value = 0
   wpm.value = 0
   objectCorrect = {}
@@ -115,11 +110,7 @@ let reset = () => {
 }
 
 let correctWord = (word, input, index) => {
-  if(word === input[index]) {
-    return true
-  } else {
-    return false
-  }
+  return word === input[index]
 }
 
 let objectCorrect = {}
@@ -194,14 +185,14 @@ window.addEventListener('keydown', func)
       <div class="grid grid-cols-3 gap-4 p-5 h-1/2 place-content-center">
         <div></div>
         <div class="items-center justify-self-center">
-          <div class="w-full flex items-center justify-center cursor-pointer" v-on:click="toggleModal()">
+          <div class="w-full flex items-center justify-center cursor-pointer" @click="toggleModal">
             <img :src="questionMark" alt="questionMark" class="w-4">
             <h1 class="text-white text-center text-[#F1DDC9] font-bold p-3">HOW
               TO PLAY</h1>
           </div>
           <button
               class="bg-[#F1DDC9] text-[#B76E22] font-bold py-2 px-4 rounded-full w-48 p-3 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300"
-              v-on:click="togglePlay()">
+              @click="togglePlay">
             PLAY
           </button>
         </div>
@@ -213,7 +204,7 @@ window.addEventListener('keydown', func)
     <div v-if="showModal"
          class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 justify-center items-center flex max-sm:m-10 max-lg:m-5">
       <div
-          class="relative my-6 mx-auto max-w-4xl rounded-lg shadow-lg flex flex-col w-full bg-[#000] border border-[#fff]">
+          class="relative my-6 mx-auto max-w-4xl rounded-lg shadow-lg flex flex-col w-full bg-black border border-white">
 
         <div class="flex flex-row">
           <div class="basis-1/2 p-3">
@@ -221,7 +212,7 @@ window.addEventListener('keydown', func)
           </div>
           <div class="flex items-center justify-end p-3 border-t border-solid rounded-b basis-1/2">
             <button class="w-6 h-6 text-center rounded bg-[#D9D9D9] text-black font-bold m-0" type="button"
-                    v-on:click="toggleModal()">X
+                    @click="toggleModal">X
             </button>
           </div>
         </div>
@@ -251,17 +242,12 @@ window.addEventListener('keydown', func)
 
     <div v-if="showPlay">
 
-      <div class="grid grid-cols-1">
+      <div class="flex flex-col h-screen">
         <!-- head -->
         <div class="grid grid-cols-2 p-10">
-          <div class="flex">
-            <img :src="logo" alt="logo" class="w-1/4 h-auto cursor-pointer p-3" v-on:click="togglePlay()">
-            <img :src="home" alt="home" class="w-12 h-auto cursor-pointer p-3" v-on:click="togglePlay()">
-            <img :src="crown" alt="crown" class="w-12 h-auto p-3">
-          </div>
+          <img :src="logo" alt="logo" class="w-1/4 h-auto cursor-pointer p-3" @click="togglePlay">
           <div class="flex justify-end">
-            <img :src="colorPalette" alt="colorPalette" class="w-12 h-auto p-3">
-            <img :src="user" alt="user" class="w-12 h-auto p-3">
+            <img :src="home" alt="home" class="w-12 h-auto cursor-pointer p-3" @click="togglePlay">
           </div>
 
           <div
@@ -296,29 +282,39 @@ window.addEventListener('keydown', func)
 
         <!-- body -->
         <div class="h-full grid grid-rows-1">
-          <div class="w-4/5 flex justify-self-center p-10 m-5 text-[#fff] text-2xl">
-            <div class="w-full h-full">
+          <div class="w-4/5 flex flex-col justify-self-center p-10 m-5 text-white text-2xl">
+            <div class="h-3/5">
               <h1 v-if="gameMode">{{ timer }}</h1>
               <!--              <h1 v-else>{{ wordCount }} / {{ num }}</h1>-->
               <br>
               <span v-for="(item, index) in showWords" :key="index"
                     :class="correctWord(item, history, index )? correct(index) :  index>countIndex-1 ? 'text-gray-400' : wrong(index)"><span
-                  :class="countIndex === index? '' : 'hidden' " class="blink_me" style="border-right: 1px solid;"></span>{{
+                  :class="countIndex === index? '' : 'hidden' " class="blink_me"
+                  style="border-right: 1px solid;"></span>{{
                   item
                 }}</span>
             </div>
+            <div @click="reset" class="flex justify-center">
+              <img :src="restart" alt="restart"
+                   class="w-12 h-auto cursor-pointer p-3 cursor-pointer">
+            </div>
           </div>
-          <div @click="reset" class="mt-5 flex justify-center">
-            <img :src="restart" alt="restart"
-                 class="w-12 h-auto cursor-pointer p-3 cursor-pointer">
-          </div>
+
         </div>
 
 
         <!-- footer -->
-
-        <div></div>
+        <footer class="mb-5">
+          <div class="flex text-white justify-center mt-auto">
+            <a href="https://github.com/Nine0512/PROJECT1-SEC-2-Alumilize" class="opacity-60 hover:opacity-100 pl-5">&lt;/&gt; github</a>
+            <p class="opacity-60 hover:opacity-100 pl-5">REF : <a href="https://monkeytype.com/">monkeytype</a></p>
+            <p class="opacity-60 hover:opacity-100 pl-5">Word API : <a href="https://random-word-api.herokuapp.com/home">Random Word API</a></p>
+          </div>
+        </footer>
       </div>
+
+
+      <!-- pop up score -->
       <div v-if="!status"
            class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 justify-center items-center flex max-sm:m-10 max-lg:m-5">
         <div
@@ -331,7 +327,7 @@ window.addEventListener('keydown', func)
               </div>
               <div class="mt-5">
                 <h1 class="opacity-50">accuracy</h1>
-                <h1 class="text-6xl">{{ accuracy < 0? 0 : accuracy }}%</h1>
+                <h1 class="text-6xl">{{ accuracy < 0 ? 0 : accuracy }}%</h1>
               </div>
               <div class="mt-5">
                 <h1 class="opacity-50">time</h1>
