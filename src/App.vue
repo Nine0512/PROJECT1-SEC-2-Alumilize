@@ -37,6 +37,7 @@ let toggleModal = () => {
 }
 
 let togglePlay = () => {
+  reset()
   showPlay.value = !showPlay.value;
 }
 
@@ -75,7 +76,6 @@ let changeNum = (number) => {
 }
 
 let changeTime = (time) => {
-  timer.value = time
   refTime = time
   reset()
 }
