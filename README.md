@@ -43,6 +43,8 @@ Game mode
 
 - Design and gameplay from [monkeytype](https://monkeytype.com/)
 - Word API from [Random Word API](https://random-word-api.herokuapp.com/home)
+- icon from [svgrepo](https://www.svgrepo.com/)
+- image from [tenor](https://tenor.com/)
 
 ## Prototype TestType
 https://alumilize-typing.vercel.app/
