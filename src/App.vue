@@ -16,8 +16,6 @@ let index = ref(0)
 let countIndex = ref(0)
 let countCorrect = 0
 let accuracy = ref(0)
-let timer = ref(30)
-let refTime = 30
 let startTime = ref(0)
 let endTime = ref(0)
 let time = ref(0)
@@ -26,6 +24,8 @@ let interval
 let history = ref([])
 let timeArr = [15, 30, 60, 120]
 let wordArr = [10, 25, 50, 100]
+let refTime = timeArr[1]
+let timer = ref(refTime)
 let showModal = ref(false)
 let showPlay = ref(false)
 let gameMode = ref(false)
@@ -128,9 +128,7 @@ let wrong = (index) => {
 
 
 let func = event => {
-  console.log(Object.keys(objectWrong).length)
   if (index.value === 0 && gameMode.value) {
-    console.log('time func')
     interval = setInterval(() => {
       if (timer.value === 0) {
         clearInterval(interval)
@@ -245,13 +243,13 @@ window.addEventListener('keydown', func)
       <div class="flex flex-col h-screen">
         <!-- head -->
         <div class="grid grid-cols-2 p-10">
-          <img :src="logo" alt="logo" class="w-1/4 h-auto cursor-pointer p-3" @click="togglePlay">
+          <img :src="logo" alt="logo" class="w-1/4 h-auto cursor-pointer p-3 max-sm:w-2/3" @click="togglePlay">
           <div class="flex justify-end">
             <img :src="home" alt="home" class="w-12 h-auto cursor-pointer p-3" @click="togglePlay">
           </div>
 
           <div
-              class="bg-[#F1DDC9] opacity-80 rounded grid col-span-2 w-3/6 justify-self-center text-[#B76E22] font-bold">
+              class="bg-[#F1DDC9] opacity-80 rounded grid col-span-2 w-3/6 justify-self-center text-[#B76E22] font-bold max-sm:w-full max-sm:text-xs">
             <div class="grid grid-cols-2 place-content-center pl-2">
               <div class="cursor-pointer flex">
                 <h1 class="p-2 cursor-pointer hover:opacity-100"
@@ -335,7 +333,7 @@ window.addEventListener('keydown', func)
                 <h1 v-else class="text-6xl">{{ time }}s</h1>
               </div>
             </div>
-            <div class="justify-self-center">
+            <div class="justify-self-center max-sm:hidden">
               <div v-if="wpm<=29">
                 <img src="https://media.tenor.com/zcax6e0DLyEAAAAS/ummm.gif" alt="Turtle" class="w-72 h-auto pt-5">
                 <!-- ref : https://tenor.com/view/ummm-gif-25800187 -->
