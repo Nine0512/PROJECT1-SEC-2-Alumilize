@@ -21,7 +21,7 @@ let time = ref(0)
 let wpm = ref(0)
 let interval
 let history = ref([])
-let timeArr = [5, 15, 30, 60, 120]
+let timeArr = [15, 30, 60, 120]
 let wordArr = [10, 25, 50, 100]
 let refTime = timeArr[1]
 let timer = ref(refTime)
