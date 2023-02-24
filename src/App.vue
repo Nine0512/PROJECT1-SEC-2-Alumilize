@@ -21,7 +21,7 @@ let time = ref(0)
 let wpm = ref(0)
 let interval
 let history = ref([])
-let timeArr = [15, 30, 60, 120]
+let timeArr = [5, 15, 30, 60, 120]
 let wordArr = [10, 25, 50, 100]
 let refTime = timeArr[1]
 let timer = ref(refTime)
@@ -31,12 +31,16 @@ let gameMode = ref(false)
 let status = ref(true)
 let num = wordArr[0]
 
+let input = ref(null)
+
+
 let toggleModal = () => {
   showModal.value = !showModal.value;
 }
 
 let togglePlay = () => {
   reset()
+  input.value.focus()
   showPlay.value = !showPlay.value;
 }
 
@@ -112,7 +116,6 @@ let reset = () => {
   objectWrong = {}
   clearInterval(interval)
   useWord(num)
-  window.addEventListener('keydown', func)
 }
 
 let correctWord = (word, input, index) => {
@@ -134,12 +137,11 @@ let wrong = (index) => {
 
 
 let func = event => {
-  if (index.value === 0 && gameMode.value) {
+  if (index.value === 0 && gameMode.value && event.key.length === 1) {
     interval = setInterval(() => {
       if (timer.value === 0) {
         clearInterval(interval)
         calculateTime()
-        window.removeEventListener('keydown', func)
       } else {
         timer.value--
       }
@@ -162,18 +164,14 @@ let func = event => {
 
   if (countIndex.value === words.join(' ').length) {
     calculateTime()
-    window.removeEventListener('keydown', func)
   }
-
 }
-
-window.addEventListener('keydown', func)
 
 </script>
 
 <template>
-
-  <div class="w-screen min-h-screen bg-[#0A0A0A]">
+  <input class="opacity-0 absolute cursor-default" ref="input" @keydown="func" :class="status? null : 'hidden' ">
+  <div class="w-screen min-h-screen bg-[#0A0A0A]" @click="input.focus()">
 
     <!-- home page -->
     <div class="grid grid-rows-2 p-12" v-if="!showPlay">
@@ -245,7 +243,6 @@ window.addEventListener('keydown', func)
     </div>
 
     <div v-if="showPlay">
-
       <div class="flex flex-col h-screen">
         <!-- head -->
         <div class="grid grid-cols-2 p-10">
@@ -288,7 +285,7 @@ window.addEventListener('keydown', func)
         <div class="h-full grid grid-rows-1">
           <div class="w-4/5 flex flex-col justify-self-center p-10 m-5 text-white text-2xl max-sm:text-base max-sm:w-full">
             <div class="h-3/5">
-              <h1 v-if="gameMode">{{ timer }}</h1>
+              <h1 v-if="gameMode">Time left<span class="pr-0.5"></span>: {{ timer }}s</h1>
               <!--              <h1 v-else>{{ wordCount }} / {{ num }}</h1>-->
               <br>
               <span v-for="(item, index) in showWords" :key="index"
