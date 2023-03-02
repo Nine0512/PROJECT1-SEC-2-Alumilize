@@ -7,7 +7,7 @@ const questionMark = 'images/questionMark.svg'
 const howToPlay = 'images/HowToPlay.svg'
 const home = 'images/home-3-svgrepo-com.svg'
 const restart = 'images/restart-svgrepo-com.svg'
-
+// variable
 let allWords = []
 let words = []
 let showWords = ref('')
